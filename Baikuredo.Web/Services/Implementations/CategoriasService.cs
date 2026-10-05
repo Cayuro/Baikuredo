@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Baikuredo.Web.Core;
+using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.Data;
 using Baikuredo.Web.Data.Entities;
 using Baikuredo.Web.DTOs.Categoria;
@@ -35,6 +36,59 @@ namespace Baikuredo.Web.Services.Implementations
             catch (Exception ex)
             {
                 return Response<List<CategoriaDTO>>.Failure(ex);
+            }
+        }
+
+        public async Task<Response<PaginationResponse<CategoriaDTO>>> GetPaginatedListAsync(PaginationRequest request)
+        {
+            try
+            {
+                var query = _context.Categorias.AsQueryable();
+
+                // Filtrar por texto si el usuario envía un término de búsqueda
+                if (!string.IsNullOrWhiteSpace(request.Filter))
+                {
+                    query = query.Where(c => c.Nombre.ToLower().Contains(request.Filter.ToLower()));
+                }
+
+                // Conteo total de registros
+                int totalCount = await query.CountAsync();
+
+                // Cálculo del total de páginas
+                int totalPages = (int)Math.Ceiling(totalCount / (double)request.RecordsPerPage);
+
+                // Consulta paginada
+                var items = await query
+                    .OrderBy(c => c.Nombre)
+                    .Skip((request.Page - 1) * request.RecordsPerPage)
+                    .Take(request.RecordsPerPage)
+                    .Select(c => new CategoriaDTO
+                    {
+                        Id = c.Id,
+                        Nombre = c.Nombre,
+                        Descripcion = c.Descripcion,
+                        Activo = c.Activo
+                    })
+                    .ToListAsync();
+
+                var pagedList = new PagedList<CategoriaDTO>(items);
+
+                // Construcción de la respuesta paginada con el estándar de Fraynner
+                var paginationResponse = new PaginationResponse<CategoriaDTO>
+                {
+                    CurrentPage = request.Page,
+                    RecordsPerPage = request.RecordsPerPage,
+                    TotalCount = totalCount,
+                    TotalPages = totalPages,
+                    Filter = request.Filter,
+                    List = pagedList
+                };
+
+                return Response<PaginationResponse<CategoriaDTO>>.Success(paginationResponse);
+            }
+            catch (Exception ex)
+            {
+                return Response<PaginationResponse<CategoriaDTO>>.Failure(ex);
             }
         }
 
