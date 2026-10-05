@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Baikuredo.Web.Core.Extensions;
+using Baikuredo.Web.DTOs.Categoria;
 
 namespace Baikuredo.Web.Core.Pagination
 {
     public class PagedList<T> : List<T>
     {
+        private List<CategoriaDTO> items;
+
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
         public int RecordsPerPage { get; set; }
@@ -18,6 +21,11 @@ namespace Baikuredo.Web.Core.Pagination
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
 
             AddRange(items);
+        }
+
+        public PagedList(List<CategoriaDTO> items)
+        {
+            this.items = items;
         }
 
         public static async Task<PagedList<T>> ToPagedListAsync(IQueryable<T> queryable, PaginationRequest request)
