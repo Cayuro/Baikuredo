@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,79 +11,140 @@
           rel="stylesheet" />
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- MENÚ PRINCIPAL -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+
         <div class="container">
 
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand fw-bold"
+               asp-controller="Home"
+               asp-action="Index">
                 Baikuredo
             </a>
 
             <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
-                    data-bs-target="#navbarBaikuredo">
+                    data-bs-target="#navbarBaikuredo"
+                    aria-controls="navbarBaikuredo"
+                    aria-expanded="false"
+                    aria-label="Menú">
 
                 <span class="navbar-toggler-icon"></span>
+
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarBaikuredo">
+            <div class="collapse navbar-collapse"
+                 id="navbarBaikuredo">
 
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Propietarios
+                        <a class="nav-link"
+                           asp-controller="Home"
+                           asp-action="Index">
+                            Inicio
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link"
+                           asp-controller="Categorias"
+                           asp-action="Index">
+                            Categorías
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link disabled"
+                           href="#">
+                            Marcas
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link disabled"
+                           href="#">
                             Motos
                         </a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link disabled"
+                           href="#">
                             Publicaciones
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Interesados
-                        </a>
-                    </li>
-
                 </ul>
 
-                <ul class="navbar-nav">
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            Usuarios
-                        </a>
-                    </li>
-
-                </ul>
+                <span class="navbar-text">
+                    Sistema de gestión
+                </span>
 
             </div>
+
         </div>
+
     </nav>
 
 
-    <main class="container mt-4">
+    <!-- CONTENIDO -->
+    <main class="flex-grow-1">
 
-        @RenderBody()
+        <div class="container mt-4">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show"
+                     role="alert">
+
+                    @TempData["Success"]
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+            }
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show"
+                     role="alert">
+
+                    @TempData["Error"]
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+
+                </div>
+            }
+
+            @RenderBody()
+
+        </div>
 
     </main>
 
 
-    <footer class="border-top mt-5 py-3">
-        <div class="container text-muted">
-            Baikuredo - Venta de motos usadas
+    <!-- PIE DE PÁGINA -->
+    <footer class="border-top bg-light mt-5 py-3">
+
+        <div class="container text-center text-muted">
+
+            <small>
+                &copy; @DateTime.Now.Year Baikuredo -
+                Sistema de gestión para venta de motos usadas
+            </small>
+
         </div>
+
     </footer>
 
 
@@ -92,4 +154,5 @@
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
+
 </html>
