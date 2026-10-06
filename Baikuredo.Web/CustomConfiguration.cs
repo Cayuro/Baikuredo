@@ -37,6 +37,7 @@ namespace Baikuredo.Web
         private static void AddServices(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<ICategoriasService, CategoriasService>();
+            builder.Services.AddScoped<IMarcasService, MarcasService>();
         }
 
         public static WebApplication AddCustomWebApplicationConfiguration(this WebApplication app)
