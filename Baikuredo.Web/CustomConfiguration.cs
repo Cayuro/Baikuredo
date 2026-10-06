@@ -2,8 +2,9 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Baikuredo.Web.Data;
-using Baikuredo.Web.Services.Abstractions;
-using Baikuredo.Web.Services.Implementations;
+//comentario temporal para poder ensayar las views
+//using Baikuredo.Web.Services.Abstractions;
+//using Baikuredo.Web.Services.Implementations;
 
 namespace Baikuredo.Web
 {
@@ -21,7 +22,8 @@ namespace Baikuredo.Web
             builder.Services.AddAutoMapper(typeof(Program));
 
             // Services
-            AddServices(builder);
+            //Se habilitaran cuando los serveces esten creados
+            //AddServices(builder);
 
             // Toast Notifications
             builder.Services.AddNotyf(config => 
@@ -34,11 +36,13 @@ namespace Baikuredo.Web
             return builder;
         }
 
+        /* igualmente se habilitará cuando los servicios estén creados
         private static void AddServices(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<ICategoriasService, CategoriasService>();
             builder.Services.AddScoped<IMarcasService, MarcasService>();
         }
+        */
 
         public static WebApplication AddCustomWebApplicationConfiguration(this WebApplication app)
         {
