@@ -21,12 +21,18 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                List<Marca> marcas = await _context.Marcas
+                var list = await _context.Marcas
                     .AsNoTracking()
                     .OrderBy(m => m.Nombre)
+                    .Select(m => new MarcaDTO
+                    {
+                        Id = m.Id,
+                        Nombre = m.Nombre,
+                        Estado = m.Estado
+                    })
                     .ToListAsync();
 
-                return Response<List<MarcaDTO>>.Success(marcas.Select(ToDto).ToList());
+                return Response<List<MarcaDTO>>.Success(list);
             }
             catch (Exception ex)
             {
@@ -40,33 +46,34 @@ namespace Baikuredo.Web.Services.Implementations
             {
                 IQueryable<Marca> query = _context.Marcas.AsNoTracking();
 
-                // Filtro por nombre si el usuario escribió algo en el buscador
                 if (!string.IsNullOrWhiteSpace(request.Filter))
                 {
                     query = query.Where(m => m.Nombre.ToLower().Contains(request.Filter.ToLower()));
                 }
 
                 int totalCount = await query.CountAsync();
+                int totalPages = (int)Math.Ceiling(totalCount / (double)request.RecordsPerPage);
 
-                List<Marca> marcas = await query
+                var items = await query
                     .OrderBy(m => m.Nombre)
                     .Skip((request.Page - 1) * request.RecordsPerPage)
                     .Take(request.RecordsPerPage)
+                    .Select(m => new MarcaDTO
+                    {
+                        Id = m.Id,
+                        Nombre = m.Nombre,
+                        Estado = m.Estado
+                    })
                     .ToListAsync();
 
-                // Se usa el constructor con metadatos: este sí llena la lista
-                var pagedList = new PagedList<MarcaDTO>(
-                    marcas.Select(ToDto).ToList(),
-                    totalCount,
-                    request.Page,
-                    request.RecordsPerPage);
+                var pagedList = new PagedList<MarcaDTO>(items, totalCount, request.Page, request.RecordsPerPage);
 
                 var paginationResponse = new PaginationResponse<MarcaDTO>
                 {
                     CurrentPage = request.Page,
                     RecordsPerPage = request.RecordsPerPage,
                     TotalCount = totalCount,
-                    TotalPages = pagedList.TotalPages,
+                    TotalPages = totalPages,
                     Filter = request.Filter,
                     List = pagedList
                 };
@@ -94,8 +101,7 @@ namespace Baikuredo.Web.Services.Implementations
                 {
                     Id = marca.Id,
                     Nombre = marca.Nombre,
-                    Descripcion = marca.Descripcion,
-                    Activo = marca.Activo
+                    Estado = marca.Estado
                 };
 
                 return Response<UpdateMarcaDTO>.Success(dto);
@@ -122,14 +128,20 @@ namespace Baikuredo.Web.Services.Implementations
                 {
                     Id = Guid.CreateVersion7(),
                     Nombre = nombre,
-                    Descripcion = dto.Descripcion?.Trim(),
-                    Activo = true
+                    Estado = true
                 };
 
                 await _context.Marcas.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                return Response<MarcaDTO>.Success(ToDto(entity), "Marca creada exitosamente.");
+                var resultDto = new MarcaDTO
+                {
+                    Id = entity.Id,
+                    Nombre = entity.Nombre,
+                    Estado = entity.Estado
+                };
+
+                return Response<MarcaDTO>.Success(resultDto, "Marca creada exitosamente.");
             }
             catch (Exception ex)
             {
@@ -149,7 +161,6 @@ namespace Baikuredo.Web.Services.Implementations
 
                 string nombre = dto.Nombre.Trim();
 
-                // Duplicado: otra marca (distinto Id) con el mismo nombre
                 bool existeDuplicado = await _context.Marcas
                     .AnyAsync(m => m.Nombre.ToLower() == nombre.ToLower() && m.Id != dto.Id);
                 if (existeDuplicado)
@@ -158,12 +169,12 @@ namespace Baikuredo.Web.Services.Implementations
                 }
 
                 marca.Nombre = nombre;
-                marca.Descripcion = dto.Descripcion?.Trim();
-                marca.Activo = dto.Activo;
+                marca.Estado = dto.Estado;
 
+                _context.Marcas.Update(marca);
                 await _context.SaveChangesAsync();
 
-                return Response<MarcaDTO>.Success(ToDto(marca), "Marca actualizada con éxito.");
+                return Response<MarcaDTO>.Success("Marca actualizada con éxito.");
             }
             catch (Exception ex)
             {
@@ -188,7 +199,6 @@ namespace Baikuredo.Web.Services.Implementations
             }
             catch (DbUpdateException)
             {
-                // Pasará cuando exista la tabla Modelo y la marca tenga modelos asociados
                 return Response<object>.Failure("No se puede eliminar la marca porque tiene datos asociados.");
             }
             catch (Exception ex)
@@ -197,15 +207,26 @@ namespace Baikuredo.Web.Services.Implementations
             }
         }
 
-        private static MarcaDTO ToDto(Marca marca)
+        public async Task<Response<object>> ToggleAsync(Guid id)
         {
-            return new MarcaDTO
+            try
             {
-                Id = marca.Id,
-                Nombre = marca.Nombre,
-                Descripcion = marca.Descripcion,
-                Activo = marca.Activo
-            };
+                Marca? marca = await _context.Marcas.FirstOrDefaultAsync(m => m.Id == id);
+                if (marca is null)
+                {
+                    return Response<object>.Failure($"No existe marca con id: {id}");
+                }
+
+                marca.Estado = !marca.Estado;
+                _context.Marcas.Update(marca);
+                await _context.SaveChangesAsync();
+
+                return Response<object>.Success("Estado de la marca actualizado con éxito.");
+            }
+            catch (Exception ex)
+            {
+                return Response<object>.Failure(ex);
+            }
         }
     }
 }
