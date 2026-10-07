@@ -1,0 +1,262 @@
+@using Baikuredo.Web.DTOs.Marca
+@model Baikuredo.Web.Core.Pagination.PaginationResponse<MarcaDTO>
+
+@{
+    ViewData["Title"] = "Marcas";
+}
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard">
+
+    <div class="card">
+
+        <div class="card-header">
+            
+            <div class="row">
+
+                <h3 class="m-0 font-weight-bold text-primary col-md-11">@ViewData["Title"]</h3>
+
+                <div class="col-md-1 text-end">
+                    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body mt-3">
+            
+            <form asp-action="Index" class="navbar-search" method="GET">
+
+                <input type="hidden" name="Page" value="@Model.CurrentPage" />
+
+                <div class="row mt-3">
+                        
+                    <div class="col-md-auto">                            
+                        <select asp-for="RecordsPerPage" class="form-select bg-light border-0 small">
+                            <option value="2" selected="@(Model.RecordsPerPage == 2)">2</option>
+                            <option value="10" selected="@(Model.RecordsPerPage == 10)">10</option>
+                            <option value="15" selected="@(Model.RecordsPerPage == 15)">15</option>
+                            <option value="30" selected="@(Model.RecordsPerPage == 30)">30</option>
+                            <option value="50" selected="@(Model.RecordsPerPage == 50)">50</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="input-group mb-3">
+                            <input type="text"
+                                   class="form-control bg-light border-0 small"
+                                   placeholder="Buscar..."
+                                   aria-label="search"
+                                   asp-for="Filter" />
+
+                            <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <table class="table table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>Marca</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.List != null && Model.List.Any())
+                    {
+                        @foreach(MarcaDTO item in Model.List)
+                        {
+                            // En marcas, si no está activo, pintamos la fila de gris
+                            string rowClass = !item.Estado ? "table-secondary" : "";
+                            
+                            <tr class="@rowClass">
+                                <td>@item.Nombre</td>
+                                <td>
+                                    @if (item.Estado)
+                                    {
+                                        <span class="badge bg-success">Activa</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inactiva</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+
+                                    @if (!item.Estado)
+                                    {
+                                        <form asp-action="Toggle" method="POST" style="display: contents;">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <button class="btn btn-sm btn-secondary"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    data-bs-original-title="Activar">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Toggle" method="POST" style="display: contents;">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <button class="btn btn-sm btn-info"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    data-bs-original-title="Desactivar">
+                                                <i class="bi bi-eye-slash"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                    
+                                    <form asp-action="Delete" method="POST" style="display: contents;" asp-route-id="@item.Id">
+                                        <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">No hay marcas registradas.</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+            @if (Model.TotalPages > 0)
+            {
+                <nav aria-label="">
+                    <ul class="pagination justify-content-center">
+
+                        @* First *@
+                        <li class="page-item">
+                            <a class="page-link @(Model.CurrentPage == 1 ? "disabled" : "")"
+                               asp-route-Page="1"
+                               asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                               asp-route-Filter="@Model.Filter"
+                               asp-action="Index">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+
+                        @* Previous *@
+                        <li class="page-item">
+                            <a class="page-link @(!Model.HasPrevious ? "disabled" : "")"
+                               asp-route-Page="@(Model.CurrentPage - 1)"
+                               asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                               asp-route-Filter="@Model.Filter"
+                               asp-action="Index">
+                                <i class="bi bi-chevron-left"></i>
+                           </a>
+                        </li>
+
+                        @* Pages *@
+                        @foreach (int page in Model.Pages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link @(Model.CurrentPage == page ? "active" : "")"
+                                   asp-route-Page="@(page)"
+                                   asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                                   asp-route-Filter="@Model.Filter"
+                                   asp-action="Index">
+                                    @(page)
+                                </a>
+                            </li>
+                        }
+
+                        @* Next *@
+                        <li class="page-item">
+                            <a class="page-link @(!Model.HasNext ? "disabled" : "")"
+                               asp-route-Page="@(Model.CurrentPage + 1)"
+                               asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                               asp-route-Filter="@Model.Filter"
+                               asp-action="Index">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+
+                        @* Last *@
+                        <li class="page-item">
+                            <a class="page-link @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")"
+                               asp-route-Page="@Model.TotalPages"
+                               asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                               asp-route-Filter="@Model.Filter"
+                               asp-action="Index">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+
+        </div>
+    </div>
+
+</section>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function() {
+
+            // Para inicializar los tooltips de bootstrap
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+
+            $('.btnDelete').click(function(event) {
+
+                event.preventDefault();
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¿Desea eliminar la marca?',
+                    text: "¡No podrás revertir esto!",
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        const form = $(this).closest('form');
+                        form.submit();
+                    }
+                });
+            });
+
+            // Auto-submit form when changing RecordsPerPage
+            $('#RecordsPerPage').change(function() {
+                $(this).closest('form').submit();
+            });
+        });
+
+    </script>
+
+}
