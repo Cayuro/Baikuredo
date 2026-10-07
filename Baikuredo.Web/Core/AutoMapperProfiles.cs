@@ -10,6 +10,7 @@ namespace Baikuredo.Web.Core
         public AutoMapperProfiles()
         {
             // Mapeos para Categoria
+
             CreateMap<Categoria, CategoriaDTO>().ReverseMap();
             CreateMap<CreateCategoriaDTO, Categoria>();
             CreateMap<UpdateCategoriaDTO, Categoria>().ReverseMap();
