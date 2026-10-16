@@ -12,5 +12,6 @@ namespace Baikuredo.Web.Services.Abstractions
         Task<Response<MarcaDTO>> CreateAsync(CreateMarcaDTO dto);
         Task<Response<MarcaDTO>> UpdateAsync(UpdateMarcaDTO dto);
         Task<Response<object>> DeleteAsync(Guid id);
+        Task<Response<object>> ToggleAsync(Guid id);
     }
 }
