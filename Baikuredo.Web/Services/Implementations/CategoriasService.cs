@@ -71,7 +71,7 @@ namespace Baikuredo.Web.Services.Implementations
                     })
                     .ToListAsync();
 
-                var pagedList = new PagedList<CategoriaDTO>(items);
+                var pagedList = new PagedList<CategoriaDTO>(items, totalCount, request.Page, request.RecordsPerPage);
 
                 // Construcción de la respuesta paginada con el estándar de Fraynner
                 var paginationResponse = new PaginationResponse<CategoriaDTO>
