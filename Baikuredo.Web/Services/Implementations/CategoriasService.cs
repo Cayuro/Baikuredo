@@ -3,7 +3,7 @@ using Baikuredo.Web.Core;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.Data;
 using Baikuredo.Web.Data.Entities;
-using Baikuredo.Web.DTOs.Categoria;
+using Baikuredo.Web.DTOs.Categories;
 using Baikuredo.Web.Services.Abstractions;
 
 namespace Baikuredo.Web.Services.Implementations
@@ -17,29 +17,29 @@ namespace Baikuredo.Web.Services.Implementations
             _context = context;
         }
 
-        public async Task<Response<List<CategoriaDTO>>> GetListAsync()
+        public async Task<Response<List<CategoryDTO>>> GetListAsync()
         {
             try
             {
                 var list = await _context.Categories
-                    .Select(c => new CategoriaDTO
+                    .Select(c => new CategoryDTO
                     {
                         Id = c.Id,
-                        Nombre = c.name,
-                        Descripcion = c.Description,
-                        Activo = c.IsActive
+                        Name = c.name,
+                        Description = c.Description,
+                        IsActive = c.IsActive
                     })
                     .ToListAsync();
 
-                return Response<List<CategoriaDTO>>.Success(list);
+                return Response<List<CategoryDTO>>.Success(list);
             }
             catch (Exception ex)
             {
-                return Response<List<CategoriaDTO>>.Failure(ex);
+                return Response<List<CategoryDTO>>.Failure(ex);
             }
         }
 
-        public async Task<Response<PaginationResponse<CategoriaDTO>>> GetPaginatedListAsync(PaginationRequest request)
+        public async Task<Response<PaginationResponse<CategoryDTO>>> GetPaginatedListAsync(PaginationRequest request)
         {
             try
             {
@@ -62,19 +62,19 @@ namespace Baikuredo.Web.Services.Implementations
                     .OrderBy(c => c.name)
                     .Skip((request.Page - 1) * request.RecordsPerPage)
                     .Take(request.RecordsPerPage)
-                    .Select(c => new CategoriaDTO
+                    .Select(c => new CategoryDTO
                     {
                         Id = c.Id,
-                        Nombre = c.name,
-                        Descripcion = c.Description,
-                        Activo = c.IsActive
+                        Name = c.name,
+                        Description = c.Description,
+                        IsActive = c.IsActive
                     })
                     .ToListAsync();
 
-                var pagedList = new PagedList<CategoriaDTO>(items, totalCount, request.Page, request.RecordsPerPage);
+                var pagedList = new PagedList<CategoryDTO>(items, totalCount, request.Page, request.RecordsPerPage);
 
                 // Construcción de la respuesta paginada con el estándar de Fraynner
-                var paginationResponse = new PaginationResponse<CategoriaDTO>
+                var paginationResponse = new PaginationResponse<CategoryDTO>
                 {
                     CurrentPage = request.Page,
                     RecordsPerPage = request.RecordsPerPage,
@@ -84,91 +84,91 @@ namespace Baikuredo.Web.Services.Implementations
                     List = pagedList
                 };
 
-                return Response<PaginationResponse<CategoriaDTO>>.Success(paginationResponse);
+                return Response<PaginationResponse<CategoryDTO>>.Success(paginationResponse);
             }
             catch (Exception ex)
             {
-                return Response<PaginationResponse<CategoriaDTO>>.Failure(ex);
+                return Response<PaginationResponse<CategoryDTO>>.Failure(ex);
             }
         }
 
-        public async Task<Response<UpdateCategoriaDTO>> GetOneAsync(Guid id)
+        public async Task<Response<UpdateCategoryDTO>> GetOneAsync(Guid id)
         {
             var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (categoria is null)
-                return Response<UpdateCategoriaDTO>.Failure($"No se encontró la categoría con id: {id}");
+                return Response<UpdateCategoryDTO>.Failure($"No se encontró la categoría con id: {id}");
 
-            var dto = new UpdateCategoriaDTO
+            var dto = new UpdateCategoryDTO
             {
                 Id = categoria.Id,
-                Nombre = categoria.name,
-                Descripcion = categoria.Description,
-                Activo = categoria.IsActive
+                Name = categoria.name,
+                Description = categoria.Description,
+                IsActive = categoria.IsActive
             };
 
-            return Response<UpdateCategoriaDTO>.Success(dto);
+            return Response<UpdateCategoryDTO>.Success(dto);
         }
 
-        public async Task<Response<CategoriaDTO>> CreateAsync(CreateCategoriaDTO dto)
+        public async Task<Response<CategoryDTO>> CreateAsync(CreateCategoryDTO dto)
         {
             try
             {
-                bool existe = await _context.Categories.AnyAsync(c => c.name.ToLower() == dto.Nombre.ToLower());
+                bool existe = await _context.Categories.AnyAsync(c => c.name.ToLower() == dto.Name.ToLower());
                 if (existe)
-                    return Response<CategoriaDTO>.Failure("Ya existe una categoría con ese nombre.");
+                    return Response<CategoryDTO>.Failure("Ya existe una categoría con ese nombre.");
 
                 var entity = new Category
                 {
                     Id = Guid.CreateVersion7(),
-                    name = dto.Nombre.Trim(),
-                    Description = dto.Descripcion?.Trim(),
+                    name = dto.Name.Trim(),
+                    Description = dto.Description?.Trim(),
                     IsActive = true
                 };
 
                 await _context.Categories.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                var resultDto = new CategoriaDTO
+                var resultDto = new CategoryDTO
                 {
                     Id = entity.Id,
-                    Nombre = entity.name,
-                    Descripcion = entity.Description,
-                    Activo = entity.IsActive
+                    Name = entity.name,
+                    Description = entity.Description,
+                    IsActive = entity.IsActive
                 };
 
-                return Response<CategoriaDTO>.Success(resultDto, "Categoría creada exitosamente.");
+                return Response<CategoryDTO>.Success(resultDto, "Categoría creada exitosamente.");
             }
             catch (Exception ex)
             {
-                return Response<CategoriaDTO>.Failure(ex);
+                return Response<CategoryDTO>.Failure(ex);
             }
         }
 
-        public async Task<Response<CategoriaDTO>> UpdateAsync(UpdateCategoriaDTO dto)
+        public async Task<Response<CategoryDTO>> UpdateAsync(UpdateCategoryDTO dto)
         {
             try
             {
                 var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == dto.Id);
                 if (categoria is null)
-                    return Response<CategoriaDTO>.Failure("La categoría no existe.");
+                    return Response<CategoryDTO>.Failure("La categoría no existe.");
 
                 bool existeDuplicado = await _context.Categories
-                    .AnyAsync(c => c.name.ToLower() == dto.Nombre.ToLower() && c.Id != dto.Id);
+                    .AnyAsync(c => c.name.ToLower() == dto.Name.ToLower() && c.Id != dto.Id);
                 if (existeDuplicado)
-                    return Response<CategoriaDTO>.Failure("Ya existe otra categoría con ese nombre.");
+                    return Response<CategoryDTO>.Failure("Ya existe otra categoría con ese nombre.");
 
-                categoria.name = dto.Nombre.Trim();
-                categoria.Description = dto.Descripcion?.Trim();
-                categoria.IsActive = dto.Activo;
+                categoria.name = dto.Name.Trim();
+                categoria.Description = dto.Description?.Trim();
+                categoria.IsActive = dto.IsActive;
 
                 _context.Categories.Update(categoria);
                 await _context.SaveChangesAsync();
 
-                return Response<CategoriaDTO>.Success("Categoría actualizada con éxito.");
+                return Response<CategoryDTO>.Success("Categoría actualizada con éxito.");
             }
             catch (Exception ex)
             {
-                return Response<CategoriaDTO>.Failure(ex);
+                return Response<CategoryDTO>.Failure(ex);
             }
         }
 

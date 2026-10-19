@@ -1,4 +1,4 @@
-﻿@model Baikuredo.Web.DTOs.Categoria.CreateCategoriaDTO
+﻿@model Baikuredo.Web.DTOs.Categories.CreateCategoryDTO
 
 @{
     ViewData["Title"] = "Crear categoría";
@@ -24,31 +24,31 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Nombre"
+                            <label asp-for="Name"
                                    class="form-label">
                             </label>
 
-                            <input asp-for="Nombre"
+                            <input asp-for="Name"
                                    class="form-control"
                                    placeholder="Ej: Deportiva" />
 
-                            <span asp-validation-for="Nombre"
+                            <span asp-validation-for="Name"
                                   class="text-danger">
                             </span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Descripcion"
+                            <label asp-for="Description"
                                    class="form-label">
                             </label>
 
-                            <textarea asp-for="Descripcion"
+                            <textarea asp-for="Description"
                                       class="form-control"
                                       rows="4"
                                       placeholder="Descripción de la categoría">
                             </textarea>
 
-                            <span asp-validation-for="Descripcion"
+                            <span asp-validation-for="Description"
                                   class="text-danger">
                             </span>
                         </div>

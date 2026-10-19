@@ -1,4 +1,4 @@
-﻿using Baikuredo.Web.DTOs.Categoria;
+﻿using Baikuredo.Web.DTOs.Categories;
 using Baikuredo.Web.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +23,7 @@ namespace Baikuredo.Web.Controllers
             {
                 TempData["Error"] = response.Message;
 
-                return View(new List<CategoriaDTO>());
+                return View(new List<CategoryDTO>());
             }
 
             return View(response.Result);
@@ -39,7 +39,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE - Guardar categoría
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCategoriaDTO dto)
+        public async Task<IActionResult> Create(CreateCategoryDTO dto)
         {
             if (!ModelState.IsValid)
             {
@@ -82,7 +82,7 @@ namespace Baikuredo.Web.Controllers
         // UPDATE - Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UpdateCategoriaDTO dto)
+        public async Task<IActionResult> Edit(UpdateCategoryDTO dto)
         {
             if (!ModelState.IsValid)
             {

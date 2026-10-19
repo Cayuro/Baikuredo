@@ -1,4 +1,4 @@
-@model Baikuredo.Web.DTOs.Marca.UpdateMarcaDTO
+@model Baikuredo.Web.DTOs.Brands.UpdateBrandDTO
 
 @{
     ViewData["Title"] = "Eliminar marca";
@@ -28,7 +28,7 @@
                         </dt>
 
                         <dd class="col-sm-8">
-                            @Model.Nombre
+                            @Model.Name
                         </dd>
 
                         <dt class="col-sm-4">
@@ -37,7 +37,7 @@
 
                         <dd class="col-sm-8">
 
-                            @if (Model.Estado)
+                            @if (Model.IsActive)
                             {
                                 <span class="badge bg-success">
                                     Activa

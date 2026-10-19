@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Baikuredo.Web.DTOs.Categoria.CategoriaDTO>
+﻿@model IEnumerable<Baikuredo.Web.DTOs.Categories.CategoryDTO>
 
 @{
     ViewData["Title"] = "Categorías";
@@ -49,16 +49,16 @@
                                 <tr>
 
                                     <td>
-                                        @categoria.Nombre
+                                        @categoria.Name
                                     </td>
 
                                     <td>
-                                        @categoria.Descripcion
+                                        @categoria.Description
                                     </td>
 
                                     <td>
 
-                                        @if (categoria.Activo)
+                                        @if (categoria.IsActive)
                                         {
                                             <span class="badge bg-success">
                                                 Activa

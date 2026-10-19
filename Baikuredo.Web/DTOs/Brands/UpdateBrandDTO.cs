@@ -1,16 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Baikuredo.Web.DTOs.Marca
+namespace Baikuredo.Web.DTOs.Brands
 {
-    public class UpdateMarcaDTO
+    public class UpdateBrandDTO
     {
         [Required(ErrorMessage = "El ID es obligatorio.")]
         public Guid Id { get; set; }
 
+        [Display(Name = "Nombre")]
         [Required(ErrorMessage = "El nombre de la marca es obligatorio.")]
         [MaxLength(50, ErrorMessage = "El nombre no puede superar los 50 caracteres.")]
-        public string Nombre { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
-        public bool Estado { get; set; }
+        public bool IsActive { get; set; }
     }
 }

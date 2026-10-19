@@ -1,4 +1,4 @@
-@model Baikuredo.Web.DTOs.Marca.UpdateMarcaDTO
+@model Baikuredo.Web.DTOs.Brands.UpdateBrandDTO
 
 @{
     ViewData["Title"] = "Editar marca";
@@ -26,24 +26,24 @@
                         <input asp-for="Id" type="hidden" />
 
                         <div class="mb-3">
-                            <label asp-for="Nombre"
+                            <label asp-for="Name"
                                    class="form-label">
                             </label>
 
-                            <input asp-for="Nombre"
+                            <input asp-for="Name"
                                    class="form-control" />
 
-                            <span asp-validation-for="Nombre"
+                            <span asp-validation-for="Name"
                                   class="text-danger">
                             </span>
                         </div>
 
                         <div class="form-check mb-4">
 
-                            <input asp-for="Estado"
+                            <input asp-for="IsActive"
                                    class="form-check-input" />
 
-                            <label asp-for="Estado"
+                            <label asp-for="IsActive"
                                    class="form-check-label">
                                 Marca activa
                             </label>

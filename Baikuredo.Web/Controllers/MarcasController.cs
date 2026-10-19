@@ -1,5 +1,5 @@
 using Baikuredo.Web.Core.Pagination;
-using Baikuredo.Web.DTOs.Marca;
+using Baikuredo.Web.DTOs.Brands;
 using Baikuredo.Web.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,13 +30,13 @@ namespace Baikuredo.Web.Controllers
             if (!response.IsSuccess || response.Result == null)
             {
                 TempData["Error"] = response.Message;
-                return View(new PaginationResponse<MarcaDTO>
+                return View(new PaginationResponse<BrandDTO>
                 {
                     CurrentPage = 1,
                     TotalPages = 0,
                     RecordsPerPage = 15,
                     TotalCount = 0,
-                    List = new PagedList<MarcaDTO>(new List<MarcaDTO>(), 0, 1, 15)
+                    List = new PagedList<BrandDTO>(new List<BrandDTO>(), 0, 1, 15)
                 });
             }
 
@@ -53,7 +53,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE — Guardar marca
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateMarcaDTO dto)
+        public async Task<IActionResult> Create(CreateBrandDTO dto)
         {
             if (!ModelState.IsValid)
             {
@@ -96,7 +96,7 @@ namespace Baikuredo.Web.Controllers
         // EDIT — Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UpdateMarcaDTO dto)
+        public async Task<IActionResult> Edit(UpdateBrandDTO dto)
         {
             if (!ModelState.IsValid)
             {

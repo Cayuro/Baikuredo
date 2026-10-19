@@ -3,7 +3,7 @@ using Baikuredo.Web.Core;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.Data;
 using Baikuredo.Web.Data.Entities;
-using Baikuredo.Web.DTOs.Marca;
+using Baikuredo.Web.DTOs.Brands;
 using Baikuredo.Web.Services.Abstractions;
 
 namespace Baikuredo.Web.Services.Implementations
@@ -17,30 +17,30 @@ namespace Baikuredo.Web.Services.Implementations
             _context = context;
         }
 
-        public async Task<Response<List<MarcaDTO>>> GetListAsync()
+        public async Task<Response<List<BrandDTO>>> GetListAsync()
         {
             try
             {
                 var list = await _context.Brands
                     .AsNoTracking()
                     .OrderBy(m => m.name)
-                    .Select(m => new MarcaDTO
+                    .Select(m => new BrandDTO
                     {
                         Id = m.Id,
-                        Nombre = m.name,
-                        Estado = m.isActive
+                        Name = m.name,
+                        isActive = m.isActive
                     })
                     .ToListAsync();
 
-                return Response<List<MarcaDTO>>.Success(list);
+                return Response<List<BrandDTO>>.Success(list);
             }
             catch (Exception ex)
             {
-                return Response<List<MarcaDTO>>.Failure(ex);
+                return Response<List<BrandDTO>>.Failure(ex);
             }
         }
 
-        public async Task<Response<PaginationResponse<MarcaDTO>>> GetPaginatedListAsync(PaginationRequest request)
+        public async Task<Response<PaginationResponse<BrandDTO>>> GetPaginatedListAsync(PaginationRequest request)
         {
             try
             {
@@ -58,17 +58,17 @@ namespace Baikuredo.Web.Services.Implementations
                     .OrderBy(m => m.name)
                     .Skip((request.Page - 1) * request.RecordsPerPage)
                     .Take(request.RecordsPerPage)
-                    .Select(m => new MarcaDTO
+                    .Select(m => new BrandDTO
                     {
                         Id = m.Id,
-                        Nombre = m.name,
-                        Estado = m.isActive
+                        Name = m.name,
+                        isActive = m.isActive
                     })
                     .ToListAsync();
 
-                var pagedList = new PagedList<MarcaDTO>(items, totalCount, request.Page, request.RecordsPerPage);
+                var pagedList = new PagedList<BrandDTO>(items, totalCount, request.Page, request.RecordsPerPage);
 
-                var paginationResponse = new PaginationResponse<MarcaDTO>
+                var paginationResponse = new PaginationResponse<BrandDTO>
                 {
                     CurrentPage = request.Page,
                     RecordsPerPage = request.RecordsPerPage,
@@ -78,15 +78,15 @@ namespace Baikuredo.Web.Services.Implementations
                     List = pagedList
                 };
 
-                return Response<PaginationResponse<MarcaDTO>>.Success(paginationResponse);
+                return Response<PaginationResponse<BrandDTO>>.Success(paginationResponse);
             }
             catch (Exception ex)
             {
-                return Response<PaginationResponse<MarcaDTO>>.Failure(ex);
+                return Response<PaginationResponse<BrandDTO>>.Failure(ex);
             }
         }
 
-        public async Task<Response<UpdateMarcaDTO>> GetOneAsync(Guid id)
+        public async Task<Response<UpdateBrandDTO>> GetOneAsync(Guid id)
         {
             try
             {
@@ -94,34 +94,34 @@ namespace Baikuredo.Web.Services.Implementations
 
                 if (marca is null)
                 {
-                    return Response<UpdateMarcaDTO>.Failure($"No se encontró la marca con id: {id}");
+                    return Response<UpdateBrandDTO>.Failure($"No se encontró la marca con id: {id}");
                 }
 
-                var dto = new UpdateMarcaDTO
+                var dto = new UpdateBrandDTO
                 {
                     Id = marca.Id,
-                    Nombre = marca.name,
-                    Estado = marca.isActive
+                    Name = marca.name,
+                    IsActive = marca.isActive
                 };
 
-                return Response<UpdateMarcaDTO>.Success(dto);
+                return Response<UpdateBrandDTO>.Success(dto);
             }
             catch (Exception ex)
             {
-                return Response<UpdateMarcaDTO>.Failure(ex);
+                return Response<UpdateBrandDTO>.Failure(ex);
             }
         }
 
-        public async Task<Response<MarcaDTO>> CreateAsync(CreateMarcaDTO dto)
+        public async Task<Response<BrandDTO>> CreateAsync(CreateBrandDTO dto)
         {
             try
             {
-                string nombre = dto.Nombre.Trim();
+                string nombre = dto.Name.Trim();
 
                 bool existe = await _context.Brands.AnyAsync(m => m.name.ToLower() == nombre.ToLower());
                 if (existe)
                 {
-                    return Response<MarcaDTO>.Failure("Ya existe una marca con ese nombre.");
+                    return Response<BrandDTO>.Failure("Ya existe una marca con ese nombre.");
                 }
 
                 var entity = new Brand
@@ -134,51 +134,51 @@ namespace Baikuredo.Web.Services.Implementations
                 await _context.Brands.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
-                var resultDto = new MarcaDTO
+                var resultDto = new BrandDTO
                 {
                     Id = entity.Id,
-                    Nombre = entity.name,
-                    Estado = entity.isActive
+                    Name = entity.name,
+                    isActive = entity.isActive
                 };
 
-                return Response<MarcaDTO>.Success(resultDto, "Marca creada exitosamente.");
+                return Response<BrandDTO>.Success(resultDto, "Marca creada exitosamente.");
             }
             catch (Exception ex)
             {
-                return Response<MarcaDTO>.Failure(ex);
+                return Response<BrandDTO>.Failure(ex);
             }
         }
 
-        public async Task<Response<MarcaDTO>> UpdateAsync(UpdateMarcaDTO dto)
+        public async Task<Response<BrandDTO>> UpdateAsync(UpdateBrandDTO dto)
         {
             try
             {
                 Brand? marca = await _context.Brands.FirstOrDefaultAsync(m => m.Id == dto.Id);
                 if (marca is null)
                 {
-                    return Response<MarcaDTO>.Failure("La marca no existe.");
+                    return Response<BrandDTO>.Failure("La marca no existe.");
                 }
 
-                string nombre = dto.Nombre.Trim();
+                string nombre = dto.Name.Trim();
 
                 bool existeDuplicado = await _context.Brands
                     .AnyAsync(m => m.name.ToLower() == nombre.ToLower() && m.Id != dto.Id);
                 if (existeDuplicado)
                 {
-                    return Response<MarcaDTO>.Failure("Ya existe otra marca con ese nombre.");
+                    return Response<BrandDTO>.Failure("Ya existe otra marca con ese nombre.");
                 }
 
                 marca.name = nombre;
-                marca.isActive = dto.Estado;
+                marca.isActive = dto.IsActive;
 
                 _context.Brands.Update(marca);
                 await _context.SaveChangesAsync();
 
-                return Response<MarcaDTO>.Success("Marca actualizada con éxito.");
+                return Response<BrandDTO>.Success("Marca actualizada con éxito.");
             }
             catch (Exception ex)
             {
-                return Response<MarcaDTO>.Failure(ex);
+                return Response<BrandDTO>.Failure(ex);
             }
         }
 
