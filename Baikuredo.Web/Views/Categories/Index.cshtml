@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Baikuredo.Web.DTOs.Categoria.CategoriaDTO>
+﻿@model IEnumerable<Baikuredo.Web.DTOs.Categories.CategoryDTO>
 
 @{
     ViewData["Title"] = "Categorías";
@@ -44,21 +44,21 @@
 
                         <tbody>
 
-                            @foreach (var categoria in Model)
+                            @foreach (var category in Model)
                             {
                                 <tr>
 
                                     <td>
-                                        @categoria.Nombre
+                                        @category.Name
                                     </td>
 
                                     <td>
-                                        @categoria.Descripcion
+                                        @category.Description
                                     </td>
 
                                     <td>
 
-                                        @if (categoria.Activo)
+                                        @if (category.IsActive)
                                         {
                                             <span class="badge bg-success">
                                                 Activa
@@ -76,13 +76,13 @@
                                     <td class="text-end">
 
                                         <a asp-action="Edit"
-                                           asp-route-id="@categoria.Id"
+                                           asp-route-id="@category.Id"
                                            class="btn btn-sm btn-warning">
                                             Editar
                                         </a>
 
                                         <a asp-action="Delete"
-                                           asp-route-id="@categoria.Id"
+                                           asp-route-id="@category.Id"
                                            class="btn btn-sm btn-danger">
                                             Eliminar
                                         </a>

@@ -1,7 +1,7 @@
-﻿@model Baikuredo.Web.DTOs.Categoria.CreateCategoriaDTO
+﻿@model Baikuredo.Web.DTOs.Categories.UpdateCategoryDTO
 
 @{
-    ViewData["Title"] = "Crear categoría";
+    ViewData["Title"] = "Editar categoría";
 }
 
 <div class="container py-4">
@@ -12,45 +12,57 @@
             <div class="card shadow-sm">
 
                 <div class="card-header bg-dark text-white">
-                    <h4 class="mb-0">Nueva categoría</h4>
+                    <h4 class="mb-0">Editar categoría</h4>
                 </div>
 
                 <div class="card-body">
 
-                    <form asp-action="Create" method="post">
+                    <form asp-action="Edit" method="post">
 
                         <div asp-validation-summary="ModelOnly"
                              class="text-danger mb-3">
                         </div>
 
+                        <input asp-for="Id" type="hidden" />
+
                         <div class="mb-3">
-                            <label asp-for="Nombre"
+                            <label asp-for="Name"
                                    class="form-label">
                             </label>
 
-                            <input asp-for="Nombre"
-                                   class="form-control"
-                                   placeholder="Ej: Deportiva" />
+                            <input asp-for="Name"
+                                   class="form-control" />
 
-                            <span asp-validation-for="Nombre"
+                            <span asp-validation-for="Name"
                                   class="text-danger">
                             </span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Descripcion"
+                            <label asp-for="Description"
                                    class="form-label">
                             </label>
 
-                            <textarea asp-for="Descripcion"
+                            <textarea asp-for="Description"
                                       class="form-control"
-                                      rows="4"
-                                      placeholder="Descripción de la categoría">
+                                      rows="4">
                             </textarea>
 
-                            <span asp-validation-for="Descripcion"
+                            <span asp-validation-for="Description"
                                   class="text-danger">
                             </span>
+                        </div>
+
+                        <div class="form-check mb-4">
+
+                            <input asp-for="IsActive"
+                                   class="form-check-input" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label">
+                                Categoría activa
+                            </label>
+
                         </div>
 
                         <div class="d-flex justify-content-between">
@@ -62,7 +74,7 @@
 
                             <button type="submit"
                                     class="btn btn-primary">
-                                Guardar categoría
+                                Guardar cambios
                             </button>
 
                         </div>

@@ -4,16 +4,16 @@ using Baikuredo.Web.Data.Abstractions;
 
 namespace Baikuredo.Web.Data.Entities
 {
-    public class Marca : IId
+    public class Brand : IId
     {
         public Guid Id { get; set; }
 
         [Required]
         [MaxLength(50)]
         [Column(TypeName = "varchar(50)")]
-        public string Nombre { get; set; } = null!;
+        public string name { get; set; } = null!;
 
         [Required]
-        public bool Estado { get; set; }
+        public bool isActive { get; set; }
     }
 }

@@ -1,7 +1,7 @@
-@model Baikuredo.Web.DTOs.Marca.UpdateMarcaDTO
+﻿@model Baikuredo.Web.DTOs.Categories.UpdateCategoryDTO
 
 @{
-    ViewData["Title"] = "Eliminar marca";
+    ViewData["Title"] = "Eliminar categoría";
 }
 
 <div class="container py-4">
@@ -12,13 +12,13 @@
             <div class="card shadow-sm border-danger">
 
                 <div class="card-header bg-danger text-white">
-                    <h4 class="mb-0">Eliminar marca</h4>
+                    <h4 class="mb-0">Eliminar categoría</h4>
                 </div>
 
                 <div class="card-body">
 
                     <div class="alert alert-warning">
-                        ¿Estás seguro de que deseas eliminar esta marca?
+                        ¿Estás seguro de que deseas eliminar esta categoría?
                     </div>
 
                     <dl class="row">
@@ -28,7 +28,15 @@
                         </dt>
 
                         <dd class="col-sm-8">
-                            @Model.Nombre
+                            @Model.Name
+                        </dd>
+
+                        <dt class="col-sm-4">
+                            Descripción
+                        </dt>
+
+                        <dd class="col-sm-8">
+                            @Model.Description
                         </dd>
 
                         <dt class="col-sm-4">
@@ -37,7 +45,7 @@
 
                         <dd class="col-sm-8">
 
-                            @if (Model.Estado)
+                            @if (Model.IsActive)
                             {
                                 <span class="badge bg-success">
                                     Activa

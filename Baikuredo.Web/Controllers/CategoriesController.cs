@@ -1,29 +1,29 @@
-﻿using Baikuredo.Web.DTOs.Categoria;
+﻿using Baikuredo.Web.DTOs.Categories;
 using Baikuredo.Web.Services.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
-    public class CategoriasController : Controller
+    public class CategoriesController : Controller
     {
-        private readonly ICategoriasService _categoriasService;
+        private readonly ICategoriesService _categoriesService;
 
-        public CategoriasController(ICategoriasService categoriasService)
+        public CategoriesController(ICategoriesService categoriesService)
         {
-            _categoriasService = categoriasService;
+            _categoriesService = categoriesService;
         }
 
         // READ
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var response = await _categoriasService.GetListAsync();
+            var response = await _categoriesService.GetListAsync();
 
             if (!response.IsSuccess || response.Result == null)
             {
                 TempData["Error"] = response.Message;
 
-                return View(new List<CategoriaDTO>());
+                return View(new List<CategoryDTO>());
             }
 
             return View(response.Result);
@@ -39,14 +39,14 @@ namespace Baikuredo.Web.Controllers
         // CREATE - Guardar categoría
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateCategoriaDTO dto)
+        public async Task<IActionResult> Create(CreateCategoryDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return View(dto);
             }
 
-            var response = await _categoriasService.CreateAsync(dto);
+            var response = await _categoriesService.CreateAsync(dto);
 
             if (!response.IsSuccess)
             {
@@ -67,7 +67,7 @@ namespace Baikuredo.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var response = await _categoriasService.GetOneAsync(id);
+            var response = await _categoriesService.GetOneAsync(id);
 
             if (!response.IsSuccess || response.Result == null)
             {
@@ -82,14 +82,14 @@ namespace Baikuredo.Web.Controllers
         // UPDATE - Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(UpdateCategoriaDTO dto)
+        public async Task<IActionResult> Edit(UpdateCategoryDTO dto)
         {
             if (!ModelState.IsValid)
             {
                 return View(dto);
             }
 
-            var response = await _categoriasService.UpdateAsync(dto);
+            var response = await _categoriesService.UpdateAsync(dto);
 
             if (!response.IsSuccess)
             {
@@ -110,7 +110,7 @@ namespace Baikuredo.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var response = await _categoriasService.GetOneAsync(id);
+            var response = await _categoriesService.GetOneAsync(id);
 
             if (!response.IsSuccess || response.Result == null)
             {
@@ -128,7 +128,7 @@ namespace Baikuredo.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var response = await _categoriasService.DeleteAsync(id);
+            var response = await _categoriesService.DeleteAsync(id);
 
             if (!response.IsSuccess)
             {

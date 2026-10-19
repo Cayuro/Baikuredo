@@ -1,5 +1,5 @@
-@using Baikuredo.Web.DTOs.Marca
-@model Baikuredo.Web.Core.Pagination.PaginationResponse<MarcaDTO>
+@using Baikuredo.Web.DTOs.Brands
+@model Baikuredo.Web.Core.Pagination.PaginationResponse<BrandDTO>
 
 @{
     ViewData["Title"] = "Marcas";
@@ -80,15 +80,15 @@
                 <tbody>
                     @if (Model.List != null && Model.List.Any())
                     {
-                        @foreach(MarcaDTO item in Model.List)
+                        @foreach(BrandDTO item in Model.List)
                         {
                             // En marcas, si no está activo, pintamos la fila de gris
-                            string rowClass = !item.Estado ? "table-secondary" : "";
+                            string rowClass = !item.isActive ? "table-secondary" : "";
                             
                             <tr class="@rowClass">
-                                <td>@item.Nombre</td>
+                                <td>@item.Name</td>
                                 <td>
-                                    @if (item.Estado)
+                                    @if (item.isActive)
                                     {
                                         <span class="badge bg-success">Activa</span>
                                     }
@@ -102,7 +102,7 @@
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
 
-                                    @if (!item.Estado)
+                                    @if (!item.isActive)
                                     {
                                         <form asp-action="Toggle" method="POST" style="display: contents;">
                                             <input type="hidden" name="id" value="@item.Id" />

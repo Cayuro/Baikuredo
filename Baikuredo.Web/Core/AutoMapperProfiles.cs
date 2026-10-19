@@ -1,7 +1,7 @@
 using AutoMapper;
 using Baikuredo.Web.Data.Entities;
-using Baikuredo.Web.DTOs.Categoria;
-using Baikuredo.Web.DTOs.Marca;
+using Baikuredo.Web.DTOs.Categories;
+using Baikuredo.Web.DTOs.Brands;
 
 namespace Baikuredo.Web.Core
 {
@@ -11,14 +11,15 @@ namespace Baikuredo.Web.Core
         {
             // Mapeos para Categoria
 
-            CreateMap<Categoria, CategoriaDTO>().ReverseMap();
-            CreateMap<CreateCategoriaDTO, Categoria>();
-            CreateMap<UpdateCategoriaDTO, Categoria>().ReverseMap();
+            CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<CreateCategoryDTO, Category>();
+            CreateMap<UpdateCategoryDTO, Category>().ReverseMap();
 
             // Mapeos para Marca (Descomentar cuando Fraynner suba la entidad Marca)
-            // CreateMap<Marca, MarcaDTO>().ReverseMap();
-            // CreateMap<CreateMarcaDTO, Marca>();
-            // CreateMap<UpdateMarcaDTO, Marca>().ReverseMap();
+            // Mapeos para Brand
+            CreateMap<Brand, BrandDTO>().ReverseMap();
+            CreateMap<CreateBrandDTO, Brand>();
+            CreateMap<UpdateBrandDTO, Brand>().ReverseMap();
         }
     }
 }
