@@ -8,11 +8,11 @@ using Baikuredo.Web.Services.Abstractions;
 
 namespace Baikuredo.Web.Services.Implementations
 {
-    public class CategoriasService : ICategoriasService
+    public class CategoriesService : ICategoriesService
     {
         private readonly DataContext _context;
 
-        public CategoriasService(DataContext context)
+        public CategoriesService(DataContext context)
         {
             _context = context;
         }
@@ -94,16 +94,16 @@ namespace Baikuredo.Web.Services.Implementations
 
         public async Task<Response<UpdateCategoryDTO>> GetOneAsync(Guid id)
         {
-            var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
-            if (categoria is null)
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (category is null)
                 return Response<UpdateCategoryDTO>.Failure($"No se encontró la categoría con id: {id}");
 
             var dto = new UpdateCategoryDTO
             {
-                Id = categoria.Id,
-                Name = categoria.name,
-                Description = categoria.Description,
-                IsActive = categoria.IsActive
+                Id = category.Id,
+                Name = category.name,
+                Description = category.Description,
+                IsActive = category.IsActive
             };
 
             return Response<UpdateCategoryDTO>.Success(dto);
@@ -113,8 +113,8 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                bool existe = await _context.Categories.AnyAsync(c => c.name.ToLower() == dto.Name.ToLower());
-                if (existe)
+                bool exists = await _context.Categories.AnyAsync(c => c.name.ToLower() == dto.Name.ToLower());
+                if (exists)
                     return Response<CategoryDTO>.Failure("Ya existe una categoría con ese nombre.");
 
                 var entity = new Category
@@ -148,20 +148,20 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == dto.Id);
-                if (categoria is null)
+                var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == dto.Id);
+                if (category is null)
                     return Response<CategoryDTO>.Failure("La categoría no existe.");
 
-                bool existeDuplicado = await _context.Categories
+                bool duplicateExists = await _context.Categories
                     .AnyAsync(c => c.name.ToLower() == dto.Name.ToLower() && c.Id != dto.Id);
-                if (existeDuplicado)
+                if (duplicateExists)
                     return Response<CategoryDTO>.Failure("Ya existe otra categoría con ese nombre.");
 
-                categoria.name = dto.Name.Trim();
-                categoria.Description = dto.Description?.Trim();
-                categoria.IsActive = dto.IsActive;
+                category.name = dto.Name.Trim();
+                category.Description = dto.Description?.Trim();
+                category.IsActive = dto.IsActive;
 
-                _context.Categories.Update(categoria);
+                _context.Categories.Update(category);
                 await _context.SaveChangesAsync();
 
                 return Response<CategoryDTO>.Success("Categoría actualizada con éxito.");
@@ -176,11 +176,11 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
-                if (categoria is null)
+                var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+                if (category is null)
                     return Response<object>.Failure("Categoría no encontrada.");
 
-                _context.Categories.Remove(categoria);
+                _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
 
                 return Response<object>.Success("Categoría eliminada con éxito.");

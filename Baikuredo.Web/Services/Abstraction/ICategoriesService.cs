@@ -4,7 +4,7 @@ using Baikuredo.Web.DTOs.Categories;
 
 namespace Baikuredo.Web.Services.Abstractions
 {
-    public interface ICategoriasService
+    public interface ICategoriesService
     {
         // Método actual sin paginar
         Task<Response<List<CategoryDTO>>> GetListAsync();

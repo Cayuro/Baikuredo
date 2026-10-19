@@ -6,9 +6,9 @@ namespace Baikuredo.Web.Controllers
 {
     public class CategoriasController : Controller
     {
-        private readonly ICategoriasService _categoriasService;
+        private readonly ICategoriesService _categoriasService;
 
-        public CategoriasController(ICategoriasService categoriasService)
+        public CategoriasController(ICategoriesService categoriasService)
         {
             _categoriasService = categoriasService;
         }

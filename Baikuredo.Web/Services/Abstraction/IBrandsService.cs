@@ -4,7 +4,7 @@ using Baikuredo.Web.DTOs.Brands;
 
 namespace Baikuredo.Web.Services.Abstractions
 {
-    public interface IMarcasService
+    public interface IBrandsService
     {
         Task<Response<List<BrandDTO>>> GetListAsync();
         Task<Response<PaginationResponse<BrandDTO>>> GetPaginatedListAsync(PaginationRequest request);

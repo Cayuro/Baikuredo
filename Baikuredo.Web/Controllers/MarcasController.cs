@@ -7,9 +7,9 @@ namespace Baikuredo.Web.Controllers
 {
     public class MarcasController : Controller
     {
-        private readonly IMarcasService _marcasService;
+        private readonly IBrandsService _marcasService;
 
-        public MarcasController(IMarcasService marcasService)
+        public MarcasController(IBrandsService marcasService)
         {
             _marcasService = marcasService;
         }
