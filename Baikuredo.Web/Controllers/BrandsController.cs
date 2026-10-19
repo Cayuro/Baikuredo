@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
-    public class MarcasController : Controller
+    public class BrandsController : Controller
     {
-        private readonly IBrandsService _marcasService;
+        private readonly IBrandsService _brandsService;
 
-        public MarcasController(IBrandsService marcasService)
+        public BrandsController(IBrandsService brandsService)
         {
-            _marcasService = marcasService;
+            _brandsService = brandsService;
         }
 
         // INDEX — Listado paginado con filtro
@@ -25,7 +25,7 @@ namespace Baikuredo.Web.Controllers
                 Filter = filter
             };
 
-            var response = await _marcasService.GetPaginatedListAsync(request);
+            var response = await _brandsService.GetPaginatedListAsync(request);
 
             if (!response.IsSuccess || response.Result == null)
             {
@@ -60,7 +60,7 @@ namespace Baikuredo.Web.Controllers
                 return View(dto);
             }
 
-            var response = await _marcasService.CreateAsync(dto);
+            var response = await _brandsService.CreateAsync(dto);
 
             if (!response.IsSuccess)
             {
@@ -81,7 +81,7 @@ namespace Baikuredo.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var response = await _marcasService.GetOneAsync(id);
+            var response = await _brandsService.GetOneAsync(id);
 
             if (!response.IsSuccess || response.Result == null)
             {
@@ -103,7 +103,7 @@ namespace Baikuredo.Web.Controllers
                 return View(dto);
             }
 
-            var response = await _marcasService.UpdateAsync(dto);
+            var response = await _brandsService.UpdateAsync(dto);
 
             if (!response.IsSuccess)
             {
@@ -124,7 +124,7 @@ namespace Baikuredo.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var response = await _marcasService.GetOneAsync(id);
+            var response = await _brandsService.GetOneAsync(id);
 
             if (!response.IsSuccess || response.Result == null)
             {
@@ -142,7 +142,7 @@ namespace Baikuredo.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var response = await _marcasService.DeleteAsync(id);
+            var response = await _brandsService.DeleteAsync(id);
 
             if (!response.IsSuccess)
             {
@@ -161,7 +161,7 @@ namespace Baikuredo.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Toggle(Guid id)
         {
-            var response = await _marcasService.ToggleAsync(id);
+            var response = await _brandsService.ToggleAsync(id);
 
             if (!response.IsSuccess)
             {
