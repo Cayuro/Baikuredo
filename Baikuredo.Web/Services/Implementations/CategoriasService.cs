@@ -21,13 +21,13 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                var list = await _context.Categorias
+                var list = await _context.Categories
                     .Select(c => new CategoriaDTO
                     {
                         Id = c.Id,
-                        Nombre = c.Nombre,
-                        Descripcion = c.Descripcion,
-                        Activo = c.Activo
+                        Nombre = c.name,
+                        Descripcion = c.Description,
+                        Activo = c.IsActive
                     })
                     .ToListAsync();
 
@@ -43,12 +43,12 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                var query = _context.Categorias.AsQueryable();
+                var query = _context.Categories.AsQueryable();
 
                 // Filtrar por texto si el usuario envía un término de búsqueda
                 if (!string.IsNullOrWhiteSpace(request.Filter))
                 {
-                    query = query.Where(c => c.Nombre.ToLower().Contains(request.Filter.ToLower()));
+                    query = query.Where(c => c.name.ToLower().Contains(request.Filter.ToLower()));
                 }
 
                 // Conteo total de registros
@@ -59,15 +59,15 @@ namespace Baikuredo.Web.Services.Implementations
 
                 // Consulta paginada
                 var items = await query
-                    .OrderBy(c => c.Nombre)
+                    .OrderBy(c => c.name)
                     .Skip((request.Page - 1) * request.RecordsPerPage)
                     .Take(request.RecordsPerPage)
                     .Select(c => new CategoriaDTO
                     {
                         Id = c.Id,
-                        Nombre = c.Nombre,
-                        Descripcion = c.Descripcion,
-                        Activo = c.Activo
+                        Nombre = c.name,
+                        Descripcion = c.Description,
+                        Activo = c.IsActive
                     })
                     .ToListAsync();
 
@@ -94,16 +94,16 @@ namespace Baikuredo.Web.Services.Implementations
 
         public async Task<Response<UpdateCategoriaDTO>> GetOneAsync(Guid id)
         {
-            var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+            var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (categoria is null)
                 return Response<UpdateCategoriaDTO>.Failure($"No se encontró la categoría con id: {id}");
 
             var dto = new UpdateCategoriaDTO
             {
                 Id = categoria.Id,
-                Nombre = categoria.Nombre,
-                Descripcion = categoria.Descripcion,
-                Activo = categoria.Activo
+                Nombre = categoria.name,
+                Descripcion = categoria.Description,
+                Activo = categoria.IsActive
             };
 
             return Response<UpdateCategoriaDTO>.Success(dto);
@@ -113,27 +113,27 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                bool existe = await _context.Categorias.AnyAsync(c => c.Nombre.ToLower() == dto.Nombre.ToLower());
+                bool existe = await _context.Categories.AnyAsync(c => c.name.ToLower() == dto.Nombre.ToLower());
                 if (existe)
                     return Response<CategoriaDTO>.Failure("Ya existe una categoría con ese nombre.");
 
-                var entity = new Categoria
+                var entity = new Category
                 {
                     Id = Guid.CreateVersion7(),
-                    Nombre = dto.Nombre.Trim(),
-                    Descripcion = dto.Descripcion?.Trim(),
-                    Activo = true
+                    name = dto.Nombre.Trim(),
+                    Description = dto.Descripcion?.Trim(),
+                    IsActive = true
                 };
 
-                await _context.Categorias.AddAsync(entity);
+                await _context.Categories.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
                 var resultDto = new CategoriaDTO
                 {
                     Id = entity.Id,
-                    Nombre = entity.Nombre,
-                    Descripcion = entity.Descripcion,
-                    Activo = entity.Activo
+                    Nombre = entity.name,
+                    Descripcion = entity.Description,
+                    Activo = entity.IsActive
                 };
 
                 return Response<CategoriaDTO>.Success(resultDto, "Categoría creada exitosamente.");
@@ -148,20 +148,20 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == dto.Id);
+                var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == dto.Id);
                 if (categoria is null)
                     return Response<CategoriaDTO>.Failure("La categoría no existe.");
 
-                bool existeDuplicado = await _context.Categorias
-                    .AnyAsync(c => c.Nombre.ToLower() == dto.Nombre.ToLower() && c.Id != dto.Id);
+                bool existeDuplicado = await _context.Categories
+                    .AnyAsync(c => c.name.ToLower() == dto.Nombre.ToLower() && c.Id != dto.Id);
                 if (existeDuplicado)
                     return Response<CategoriaDTO>.Failure("Ya existe otra categoría con ese nombre.");
 
-                categoria.Nombre = dto.Nombre.Trim();
-                categoria.Descripcion = dto.Descripcion?.Trim();
-                categoria.Activo = dto.Activo;
+                categoria.name = dto.Nombre.Trim();
+                categoria.Description = dto.Descripcion?.Trim();
+                categoria.IsActive = dto.Activo;
 
-                _context.Categorias.Update(categoria);
+                _context.Categories.Update(categoria);
                 await _context.SaveChangesAsync();
 
                 return Response<CategoriaDTO>.Success("Categoría actualizada con éxito.");
@@ -176,11 +176,11 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                var categoria = await _context.Categorias.FirstOrDefaultAsync(c => c.Id == id);
+                var categoria = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
                 if (categoria is null)
                     return Response<object>.Failure("Categoría no encontrada.");
 
-                _context.Categorias.Remove(categoria);
+                _context.Categories.Remove(categoria);
                 await _context.SaveChangesAsync();
 
                 return Response<object>.Success("Categoría eliminada con éxito.");

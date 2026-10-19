@@ -11,9 +11,9 @@ namespace Baikuredo.Web.Core
         {
             // Mapeos para Categoria
 
-            CreateMap<Categoria, CategoriaDTO>().ReverseMap();
-            CreateMap<CreateCategoriaDTO, Categoria>();
-            CreateMap<UpdateCategoriaDTO, Categoria>().ReverseMap();
+            CreateMap<Category, CategoriaDTO>().ReverseMap();
+            CreateMap<CreateCategoriaDTO, Category>();
+            CreateMap<UpdateCategoriaDTO, Category>().ReverseMap();
 
             // Mapeos para Marca (Descomentar cuando Fraynner suba la entidad Marca)
             // CreateMap<Marca, MarcaDTO>().ReverseMap();

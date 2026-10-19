@@ -21,14 +21,14 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                var list = await _context.Marcas
+                var list = await _context.Brands
                     .AsNoTracking()
-                    .OrderBy(m => m.Nombre)
+                    .OrderBy(m => m.name)
                     .Select(m => new MarcaDTO
                     {
                         Id = m.Id,
-                        Nombre = m.Nombre,
-                        Estado = m.Estado
+                        Nombre = m.name,
+                        Estado = m.isActive
                     })
                     .ToListAsync();
 
@@ -44,25 +44,25 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                IQueryable<Marca> query = _context.Marcas.AsNoTracking();
+                IQueryable<Brand> query = _context.Brands.AsNoTracking();
 
                 if (!string.IsNullOrWhiteSpace(request.Filter))
                 {
-                    query = query.Where(m => m.Nombre.ToLower().Contains(request.Filter.ToLower()));
+                    query = query.Where(m => m.name.ToLower().Contains(request.Filter.ToLower()));
                 }
 
                 int totalCount = await query.CountAsync();
                 int totalPages = (int)Math.Ceiling(totalCount / (double)request.RecordsPerPage);
 
                 var items = await query
-                    .OrderBy(m => m.Nombre)
+                    .OrderBy(m => m.name)
                     .Skip((request.Page - 1) * request.RecordsPerPage)
                     .Take(request.RecordsPerPage)
                     .Select(m => new MarcaDTO
                     {
                         Id = m.Id,
-                        Nombre = m.Nombre,
-                        Estado = m.Estado
+                        Nombre = m.name,
+                        Estado = m.isActive
                     })
                     .ToListAsync();
 
@@ -90,7 +90,7 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                Marca? marca = await _context.Marcas.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+                Brand? marca = await _context.Brands.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
 
                 if (marca is null)
                 {
@@ -100,8 +100,8 @@ namespace Baikuredo.Web.Services.Implementations
                 var dto = new UpdateMarcaDTO
                 {
                     Id = marca.Id,
-                    Nombre = marca.Nombre,
-                    Estado = marca.Estado
+                    Nombre = marca.name,
+                    Estado = marca.isActive
                 };
 
                 return Response<UpdateMarcaDTO>.Success(dto);
@@ -118,27 +118,27 @@ namespace Baikuredo.Web.Services.Implementations
             {
                 string nombre = dto.Nombre.Trim();
 
-                bool existe = await _context.Marcas.AnyAsync(m => m.Nombre.ToLower() == nombre.ToLower());
+                bool existe = await _context.Brands.AnyAsync(m => m.name.ToLower() == nombre.ToLower());
                 if (existe)
                 {
                     return Response<MarcaDTO>.Failure("Ya existe una marca con ese nombre.");
                 }
 
-                var entity = new Marca
+                var entity = new Brand
                 {
                     Id = Guid.CreateVersion7(),
-                    Nombre = nombre,
-                    Estado = true
+                    name = nombre,
+                    isActive = true
                 };
 
-                await _context.Marcas.AddAsync(entity);
+                await _context.Brands.AddAsync(entity);
                 await _context.SaveChangesAsync();
 
                 var resultDto = new MarcaDTO
                 {
                     Id = entity.Id,
-                    Nombre = entity.Nombre,
-                    Estado = entity.Estado
+                    Nombre = entity.name,
+                    Estado = entity.isActive
                 };
 
                 return Response<MarcaDTO>.Success(resultDto, "Marca creada exitosamente.");
@@ -153,7 +153,7 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                Marca? marca = await _context.Marcas.FirstOrDefaultAsync(m => m.Id == dto.Id);
+                Brand? marca = await _context.Brands.FirstOrDefaultAsync(m => m.Id == dto.Id);
                 if (marca is null)
                 {
                     return Response<MarcaDTO>.Failure("La marca no existe.");
@@ -161,17 +161,17 @@ namespace Baikuredo.Web.Services.Implementations
 
                 string nombre = dto.Nombre.Trim();
 
-                bool existeDuplicado = await _context.Marcas
-                    .AnyAsync(m => m.Nombre.ToLower() == nombre.ToLower() && m.Id != dto.Id);
+                bool existeDuplicado = await _context.Brands
+                    .AnyAsync(m => m.name.ToLower() == nombre.ToLower() && m.Id != dto.Id);
                 if (existeDuplicado)
                 {
                     return Response<MarcaDTO>.Failure("Ya existe otra marca con ese nombre.");
                 }
 
-                marca.Nombre = nombre;
-                marca.Estado = dto.Estado;
+                marca.name = nombre;
+                marca.isActive = dto.Estado;
 
-                _context.Marcas.Update(marca);
+                _context.Brands.Update(marca);
                 await _context.SaveChangesAsync();
 
                 return Response<MarcaDTO>.Success("Marca actualizada con éxito.");
@@ -186,13 +186,13 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                Marca? marca = await _context.Marcas.FirstOrDefaultAsync(m => m.Id == id);
+                Brand? marca = await _context.Brands.FirstOrDefaultAsync(m => m.Id == id);
                 if (marca is null)
                 {
                     return Response<object>.Failure("Marca no encontrada.");
                 }
 
-                _context.Marcas.Remove(marca);
+                _context.Brands.Remove(marca);
                 await _context.SaveChangesAsync();
 
                 return Response<object>.Success("Marca eliminada con éxito.");
@@ -211,14 +211,14 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                Marca? marca = await _context.Marcas.FirstOrDefaultAsync(m => m.Id == id);
+                Brand? marca = await _context.Brands.FirstOrDefaultAsync(m => m.Id == id);
                 if (marca is null)
                 {
                     return Response<object>.Failure($"No existe marca con id: {id}");
                 }
 
-                marca.Estado = !marca.Estado;
-                _context.Marcas.Update(marca);
+                marca.isActive = !marca.isActive;
+                _context.Brands.Update(marca);
                 await _context.SaveChangesAsync();
 
                 return Response<object>.Success("Estado de la marca actualizado con éxito.");
