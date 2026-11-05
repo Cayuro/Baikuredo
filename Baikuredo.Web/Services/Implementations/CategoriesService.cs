@@ -190,5 +190,26 @@ namespace Baikuredo.Web.Services.Implementations
                 return Response<object>.Failure(ex);
             }
         }
+        public async Task<Response<object>> ToggleAsync(Guid id)
+        {
+            try
+            {
+                Category? category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+                if (category is null)
+                {
+                    return Response<object>.Failure($"No existe categoría con id: {id}");
+                }
+
+                category.IsActive = !category.IsActive;
+                _context.Categories.Update(category);
+                await _context.SaveChangesAsync();
+
+                return Response<object>.Success("Estado de la categoría actualizado con éxito.");
+            }
+            catch (Exception ex)
+            {
+                return Response<object>.Failure(ex);
+            }
+        }
     }
 }

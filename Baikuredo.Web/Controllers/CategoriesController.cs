@@ -1,5 +1,6 @@
 ﻿using Baikuredo.Web.DTOs.Categories;
 using Baikuredo.Web.Services.Abstractions;
+using Baikuredo.Web.Services.Implementations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
@@ -138,6 +139,24 @@ namespace Baikuredo.Web.Controllers
             }
 
             TempData["Success"] = response.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Toggle(Guid id)
+        {
+            var response = await _categoriesService.ToggleAsync(id);
+
+            if (!response.IsSuccess)
+            {
+                TempData["Error"] = response.Message;
+            }
+            else
+            {
+                TempData["Success"] = response.Message;
+            }
 
             return RedirectToAction(nameof(Index));
         }
