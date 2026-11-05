@@ -10,7 +10,7 @@ namespace Baikuredo.Web.Data.Entities
 
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(50, ErrorMessage = "El campo {0} debe tener máximo {1} caracteres.")]
-        public required string name { get; set; }
+        public required string Name { get; set; }
 
         [MaxLength(250, ErrorMessage = "El campo {0} debe tener máximo {1} caracteres.")]
         public string? Description { get; set; }

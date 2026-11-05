@@ -11,9 +11,9 @@ namespace Baikuredo.Web.Data.Entities
         [Required]
         [MaxLength(50)]
         [Column(TypeName = "varchar(50)")]
-        public string name { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         [Required]
-        public bool isActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }

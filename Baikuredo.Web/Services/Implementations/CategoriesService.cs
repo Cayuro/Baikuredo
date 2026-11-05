@@ -25,7 +25,7 @@ namespace Baikuredo.Web.Services.Implementations
                     .Select(c => new CategoryDTO
                     {
                         Id = c.Id,
-                        Name = c.name,
+                        Name = c.Name,
                         Description = c.Description,
                         IsActive = c.IsActive
                     })
@@ -48,7 +48,7 @@ namespace Baikuredo.Web.Services.Implementations
                 // Filtrar por texto si el usuario envía un término de búsqueda
                 if (!string.IsNullOrWhiteSpace(request.Filter))
                 {
-                    query = query.Where(c => c.name.ToLower().Contains(request.Filter.ToLower()));
+                    query = query.Where(c => c.Name.ToLower().Contains(request.Filter.ToLower()));
                 }
 
                 // Conteo total de registros
@@ -59,13 +59,13 @@ namespace Baikuredo.Web.Services.Implementations
 
                 // Consulta paginada
                 var items = await query
-                    .OrderBy(c => c.name)
+                    .OrderBy(c => c.Name)
                     .Skip((request.Page - 1) * request.RecordsPerPage)
                     .Take(request.RecordsPerPage)
                     .Select(c => new CategoryDTO
                     {
                         Id = c.Id,
-                        Name = c.name,
+                        Name = c.Name,
                         Description = c.Description,
                         IsActive = c.IsActive
                     })
@@ -101,7 +101,7 @@ namespace Baikuredo.Web.Services.Implementations
             var dto = new UpdateCategoryDTO
             {
                 Id = category.Id,
-                Name = category.name,
+                Name = category.Name,
                 Description = category.Description,
                 IsActive = category.IsActive
             };
@@ -113,14 +113,14 @@ namespace Baikuredo.Web.Services.Implementations
         {
             try
             {
-                bool exists = await _context.Categories.AnyAsync(c => c.name.ToLower() == dto.Name.ToLower());
+                bool exists = await _context.Categories.AnyAsync(c => c.Name.ToLower() == dto.Name.ToLower());
                 if (exists)
                     return Response<CategoryDTO>.Failure("Ya existe una categoría con ese nombre.");
 
                 var entity = new Category
                 {
                     Id = Guid.CreateVersion7(),
-                    name = dto.Name.Trim(),
+                    Name = dto.Name.Trim(),
                     Description = dto.Description?.Trim(),
                     IsActive = true
                 };
@@ -131,7 +131,7 @@ namespace Baikuredo.Web.Services.Implementations
                 var resultDto = new CategoryDTO
                 {
                     Id = entity.Id,
-                    Name = entity.name,
+                    Name = entity.Name,
                     Description = entity.Description,
                     IsActive = entity.IsActive
                 };
@@ -153,11 +153,11 @@ namespace Baikuredo.Web.Services.Implementations
                     return Response<CategoryDTO>.Failure("La categoría no existe.");
 
                 bool duplicateExists = await _context.Categories
-                    .AnyAsync(c => c.name.ToLower() == dto.Name.ToLower() && c.Id != dto.Id);
+                    .AnyAsync(c => c.Name.ToLower() == dto.Name.ToLower() && c.Id != dto.Id);
                 if (duplicateExists)
                     return Response<CategoryDTO>.Failure("Ya existe otra categoría con ese nombre.");
 
-                category.name = dto.Name.Trim();
+                category.Name = dto.Name.Trim();
                 category.Description = dto.Description?.Trim();
                 category.IsActive = dto.IsActive;
 

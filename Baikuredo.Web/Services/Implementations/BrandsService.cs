@@ -23,12 +23,12 @@ namespace Baikuredo.Web.Services.Implementations
             {
                 var list = await _context.Brands
                     .AsNoTracking()
-                    .OrderBy(m => m.name)
+                    .OrderBy(m => m.Name)
                     .Select(m => new BrandDTO
                     {
                         Id = m.Id,
-                        Name = m.name,
-                        isActive = m.isActive
+                        Name = m.Name,
+                        IsActive = m.IsActive
                     })
                     .ToListAsync();
 
@@ -48,21 +48,21 @@ namespace Baikuredo.Web.Services.Implementations
 
                 if (!string.IsNullOrWhiteSpace(request.Filter))
                 {
-                    query = query.Where(m => m.name.ToLower().Contains(request.Filter.ToLower()));
+                    query = query.Where(m => m.Name.ToLower().Contains(request.Filter.ToLower()));
                 }
 
                 int totalCount = await query.CountAsync();
                 int totalPages = (int)Math.Ceiling(totalCount / (double)request.RecordsPerPage);
 
                 var items = await query
-                    .OrderBy(m => m.name)
+                    .OrderBy(m => m.Name)
                     .Skip((request.Page - 1) * request.RecordsPerPage)
                     .Take(request.RecordsPerPage)
                     .Select(m => new BrandDTO
                     {
                         Id = m.Id,
-                        Name = m.name,
-                        isActive = m.isActive
+                        Name = m.Name,
+                        IsActive = m.IsActive
                     })
                     .ToListAsync();
 
@@ -100,8 +100,8 @@ namespace Baikuredo.Web.Services.Implementations
                 var dto = new UpdateBrandDTO
                 {
                     Id = brand.Id,
-                    Name = brand.name,
-                    IsActive = brand.isActive
+                    Name = brand.Name,
+                    IsActive = brand.IsActive
                 };
 
                 return Response<UpdateBrandDTO>.Success(dto);
@@ -118,7 +118,7 @@ namespace Baikuredo.Web.Services.Implementations
             {
                 string name = dto.Name.Trim();
 
-                bool exists = await _context.Brands.AnyAsync(m => m.name.ToLower() == name.ToLower());
+                bool exists = await _context.Brands.AnyAsync(m => m.Name.ToLower() == name.ToLower());
                 if (exists)
                 {
                     return Response<BrandDTO>.Failure("Ya existe una marca con ese nombre.");
@@ -127,8 +127,8 @@ namespace Baikuredo.Web.Services.Implementations
                 var entity = new Brand
                 {
                     Id = Guid.CreateVersion7(),
-                    name = name,
-                    isActive = true
+                    Name = name,
+                    IsActive = true
                 };
 
                 await _context.Brands.AddAsync(entity);
@@ -137,8 +137,8 @@ namespace Baikuredo.Web.Services.Implementations
                 var resultDto = new BrandDTO
                 {
                     Id = entity.Id,
-                    Name = entity.name,
-                    isActive = entity.isActive
+                    Name = entity.Name,
+                    IsActive = entity.IsActive
                 };
 
                 return Response<BrandDTO>.Success(resultDto, "Marca creada exitosamente.");
@@ -162,14 +162,14 @@ namespace Baikuredo.Web.Services.Implementations
                 string name = dto.Name.Trim();
 
                 bool duplicateExists = await _context.Brands
-                    .AnyAsync(m => m.name.ToLower() == name.ToLower() && m.Id != dto.Id);
+                    .AnyAsync(m => m.Name.ToLower() == name.ToLower() && m.Id != dto.Id);
                 if (duplicateExists)
                 {
                     return Response<BrandDTO>.Failure("Ya existe otra marca con ese nombre.");
                 }
 
-                brand.name = name;
-                brand.isActive = dto.IsActive;
+                brand.Name = name;
+                brand.IsActive = dto.IsActive;
 
                 _context.Brands.Update(brand);
                 await _context.SaveChangesAsync();
@@ -217,7 +217,7 @@ namespace Baikuredo.Web.Services.Implementations
                     return Response<object>.Failure($"No existe marca con id: {id}");
                 }
 
-                brand.isActive = !brand.isActive;
+                brand.IsActive = !brand.IsActive;
                 _context.Brands.Update(brand);
                 await _context.SaveChangesAsync();
 
