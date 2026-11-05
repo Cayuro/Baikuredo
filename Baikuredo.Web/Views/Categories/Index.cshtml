@@ -80,6 +80,24 @@
                                            class="btn btn-sm btn-warning">
                                             Editar
                                         </a>
+                                        @if (!category.IsActive)
+                                        {
+                                            <form asp-action="Toggle" method="POST" style="display: contents;">
+                                                <input type="hidden" name="id" value="@category.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    Activar
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-action="Toggle" method="POST" style="display: contents;">
+                                                <input type="hidden" name="id" value="@category.Id" />
+                                                <button type="submit" class="btn btn-sm btn-secondary">
+                                                    Desactivar
+                                                </button>
+                                            </form>
+                                        }
 
                                         <a asp-action="Delete"
                                            asp-route-id="@category.Id"
