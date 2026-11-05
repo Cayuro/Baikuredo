@@ -28,10 +28,10 @@ namespace Baikuredo.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("isActive")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
@@ -54,7 +54,7 @@ namespace Baikuredo.Web.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");

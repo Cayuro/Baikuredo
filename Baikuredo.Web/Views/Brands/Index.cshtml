@@ -83,12 +83,12 @@
                         @foreach(BrandDTO item in Model.List)
                         {
                             // En marcas, si no está activo, pintamos la fila de gris
-                            string rowClass = !item.isActive ? "table-secondary" : "";
+                            string rowClass = !item.IsActive ? "table-secondary" : "";
                             
                             <tr class="@rowClass">
                                 <td>@item.Name</td>
                                 <td>
-                                    @if (item.isActive)
+                                    @if (item.IsActive)
                                     {
                                         <span class="badge bg-success">Activa</span>
                                     }
@@ -102,7 +102,7 @@
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
 
-                                    @if (!item.isActive)
+                                    @if (!item.IsActive)
                                     {
                                         <form asp-action="Toggle" method="POST" style="display: contents;">
                                             <input type="hidden" name="id" value="@item.Id" />
