@@ -15,6 +15,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Para servir las fotos que se suben en tiempo de ejecución (wwwroot/uploads)
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthentication();

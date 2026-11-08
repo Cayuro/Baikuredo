@@ -18,6 +18,9 @@ namespace Baikuredo.Web.Data.Seeders
         {
             await new CategoriesSeeder(_context).SeedAsync();
             await new BrandsSeeder(_context).SeedAsync();
+            await new MotorcycleModelsSeeder(_context).SeedAsync();
+            await new OwnersSeeder(_context).SeedAsync();
+            await new MotorcyclesSeeder(_context).SeedAsync();
             await new PermissionsSeeder(_context).SeedAsync();
             await new AccountSeeder(_context, _userManager).SeedAsync();
         }

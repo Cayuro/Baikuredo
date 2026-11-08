@@ -1,0 +1,47 @@
+@using Baikuredo.Web.Core.Enums
+@model Baikuredo.Web.DTOs.Publications.PublicationDetailDTO
+
+@{
+    ViewData["Title"] = "Eliminar publicación";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Eliminar publicación</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        ¿Estás seguro? Se borrarán también sus @Model.Photos.Count fotos, su historial de precios y sus reservas.
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-4">Moto</dt>
+                        <dd class="col-sm-8">@Model.Publication.Plate - @Model.Publication.BrandName @Model.Publication.ModelName</dd>
+
+                        <dt class="col-sm-4">Precio</dt>
+                        <dd class="col-sm-8">@($"${Model.Publication.SalePrice:N0}")</dd>
+
+                        <dt class="col-sm-4">Estado</dt>
+                        <dd class="col-sm-8"><span class="badge @Model.Publication.Status.BadgeClass()">@Model.Publication.Status.ToSpanish()</span></dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" name="id" value="@Model.Publication.Id" />
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                Eliminar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

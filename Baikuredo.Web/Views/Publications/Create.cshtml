@@ -1,0 +1,59 @@
+@model Baikuredo.Web.DTOs.Publications.CreatePublicationDTO
+
+@{
+    ViewData["Title"] = "Nueva publicación";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Nueva publicación</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="MotorcycleId" class="form-label"></label>
+                            <select asp-for="MotorcycleId" asp-items="Model.Motorcycles" class="form-select">
+                                <option value="">-- Seleccione una moto --</option>
+                            </select>
+                            <span asp-validation-for="MotorcycleId" class="text-danger"></span>
+                            <div class="form-text">Solo aparecen las motos que no tienen una publicación disponible o reservada.</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SalePrice" class="form-label"></label>
+                                <input asp-for="SalePrice" class="form-control" placeholder="Ej: 12500000" />
+                                <span asp-validation-for="SalePrice" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Mileage" class="form-label"></label>
+                                <input asp-for="Mileage" class="form-control" placeholder="Ej: 15000" />
+                                <span asp-validation-for="Mileage" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Estado de llantas, extras, mantenimientos..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Guardar publicación
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

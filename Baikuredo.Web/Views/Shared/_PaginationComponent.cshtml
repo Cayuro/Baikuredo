@@ -1,0 +1,67 @@
+@model Baikuredo.Web.Core.Pagination.Abstractions.IPagination
+
+@if (Model.TotalPages > 0)
+{
+    <nav aria-label="">
+        <ul class="pagination justify-content-center">
+
+            @* First *@
+            <li class="page-item">
+                <a class="page-link @(Model.CurrentPage == 1 ? "disabled" : "")"
+                   asp-route-Page="1"
+                   asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                   asp-route-Filter="@Model.Filter"
+                   asp-action="Index">
+                    <i class="bi bi-chevron-double-left"></i>
+                </a>
+            </li>
+
+            @* Previous *@
+            <li class="page-item">
+                <a class="page-link @(!Model.HasPrevious ? "disabled" : "")"
+                   asp-route-Page="@(Model.CurrentPage - 1)"
+                   asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                   asp-route-Filter="@Model.Filter"
+                   asp-action="Index">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+
+            @* Pages *@
+            @foreach (int page in Model.Pages)
+            {
+                <li class="page-item">
+                    <a class="page-link @(Model.CurrentPage == page ? "active" : "")"
+                       asp-route-Page="@(page)"
+                       asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                       asp-route-Filter="@Model.Filter"
+                       asp-action="Index">
+                        @(page)
+                    </a>
+                </li>
+            }
+
+            @* Next *@
+            <li class="page-item">
+                <a class="page-link @(!Model.HasNext ? "disabled" : "")"
+                   asp-route-Page="@(Model.CurrentPage + 1)"
+                   asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                   asp-route-Filter="@Model.Filter"
+                   asp-action="Index">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+
+            @* Last *@
+            <li class="page-item">
+                <a class="page-link @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")"
+                   asp-route-Page="@Model.TotalPages"
+                   asp-route-RecordsPerPage="@Model.RecordsPerPage"
+                   asp-route-Filter="@Model.Filter"
+                   asp-action="Index">
+                    <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}

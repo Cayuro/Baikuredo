@@ -33,8 +33,8 @@ namespace Baikuredo.Web.Data.Seeders
             // Admin: no necesita permisos, el AccountService lo deja pasar a todo
             await CheckRoleAsync(Env.SUPER_ADMIN_ROLE_NAME, new List<string>());
 
-            // Auxiliar: gestiona marcas y categorías
-            await CheckRoleAsync(ASSISTANT_ROLE_NAME, new List<string> { "Marcas", "Categorias" });
+            // Auxiliar: gestiona el catálogo, las motos, las publicaciones y las reservas
+            await CheckRoleAsync(ASSISTANT_ROLE_NAME, new List<string> { "Marcas", "Modelos", "Categorias", "Propietarios", "Motos", "Publicaciones", "Reservas" });
 
             // Cliente: por ahora sin permisos de administración
             await CheckRoleAsync(CLIENT_ROLE_NAME, new List<string>());
@@ -42,27 +42,33 @@ namespace Baikuredo.Web.Data.Seeders
 
         private async Task CheckRoleAsync(string roleName, List<string> modules)
         {
-            bool exists = await _context.BaikuredoRoles.AnyAsync(r => r.Name == roleName);
+            BaikuredoRole? role = await _context.BaikuredoRoles.FirstOrDefaultAsync(r => r.Name == roleName);
 
-            if (exists)
+            if (role is null)
             {
-                return;
+                role = new BaikuredoRole
+                {
+                    Id = Guid.NewGuid(),
+                    Name = roleName
+                };
+
+                await _context.BaikuredoRoles.AddAsync(role);
             }
 
-            BaikuredoRole role = new BaikuredoRole
-            {
-                Id = Guid.NewGuid(),
-                Name = roleName
-            };
-
-            await _context.BaikuredoRoles.AddAsync(role);
+            Guid roleId = role.Id;
 
             List<Permission> permissions = await _context.Permissions.Where(p => modules.Contains(p.Module))
                                                                      .ToListAsync();
 
             foreach (Permission permission in permissions)
             {
-                await _context.RolePermissions.AddAsync(new RolePermission { BaikuredoRoleId = role.Id, PermissionId = permission.Id });
+                // Si el rol ya existía, solo se agregan los permisos que le falten
+                bool hasPermission = await _context.RolePermissions.AnyAsync(rp => rp.BaikuredoRoleId == roleId && rp.PermissionId == permission.Id);
+
+                if (!hasPermission)
+                {
+                    await _context.RolePermissions.AddAsync(new RolePermission { BaikuredoRoleId = roleId, PermissionId = permission.Id });
+                }
             }
 
             await _context.SaveChangesAsync();

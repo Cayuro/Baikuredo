@@ -1,0 +1,257 @@
+@using Baikuredo.Web.Core.Enums
+@model Baikuredo.Web.DTOs.Publications.PublicationDetailDTO
+
+@{
+    ViewData["Title"] = "Detalle de publicación";
+    var publication = Model.Publication;
+}
+
+<div class="pagetitle">
+    <h1>@publication.BrandName @publication.ModelName - @publication.Plate</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index">Publicaciones</a></li>
+            <li class="breadcrumb-item active">Detalle</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+
+    @* DATOS DE LA PUBLICACIÓN *@
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                @($"${publication.SalePrice:N0}")
+                <span class="badge @publication.Status.BadgeClass() ms-2">@publication.Status.ToSpanish()</span>
+            </h4>
+            <div>
+                <a asp-action="Edit" asp-route-id="@publication.Id" class="btn btn-warning btn-sm">
+                    <i class="bi bi-pencil-fill"></i> Editar
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Volver</a>
+            </div>
+        </div>
+        <div class="card-body pt-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-5">Placa</dt>
+                        <dd class="col-sm-7">@publication.Plate</dd>
+
+                        <dt class="col-sm-5">Año</dt>
+                        <dd class="col-sm-7">@Model.Year</dd>
+
+                        <dt class="col-sm-5">Cilindraje</dt>
+                        <dd class="col-sm-7">@Model.Displacement cc</dd>
+
+                        <dt class="col-sm-5">Color</dt>
+                        <dd class="col-sm-7">@Model.Color</dd>
+
+                        <dt class="col-sm-5">Categoría</dt>
+                        <dd class="col-sm-7">@Model.CategoryName</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-5">Kilometraje</dt>
+                        <dd class="col-sm-7">@($"{publication.Mileage:N0} km")</dd>
+
+                        <dt class="col-sm-5">Propietario</dt>
+                        <dd class="col-sm-7">@Model.OwnerName</dd>
+
+                        <dt class="col-sm-5">Publicada por</dt>
+                        <dd class="col-sm-7">@publication.UserEmail</dd>
+
+                        <dt class="col-sm-5">Fecha</dt>
+                        <dd class="col-sm-7">@publication.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</dd>
+
+                        @if (publication.ClosedAt.HasValue)
+                        {
+                            <dt class="col-sm-5">Cerrada</dt>
+                            <dd class="col-sm-7">@publication.ClosedAt.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(publication.Description))
+            {
+                <p class="mb-0"><strong>Descripción:</strong> @publication.Description</p>
+            }
+        </div>
+    </div>
+
+    @* FOTOS *@
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Fotos (@Model.Photos.Count)</h5>
+        </div>
+        <div class="card-body pt-3">
+
+            <form asp-action="AddPhoto" method="post" enctype="multipart/form-data" class="row g-2 mb-4">
+                <input type="hidden" name="publicationId" value="@publication.Id" />
+                <div class="col-md-9">
+                    <input type="file" name="photo" class="form-control" accept=".jpg,.jpeg,.png,.webp" required />
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-upload"></i> Subir foto
+                    </button>
+                </div>
+            </form>
+
+            @if (Model.Photos.Any())
+            {
+                <div class="row">
+                    @foreach (var photo in Model.Photos)
+                    {
+                        <div class="col-md-3 mb-3">
+                            <div class="card h-100 @(photo.IsMain ? "border-primary border-3" : "")">
+                                <img src="@photo.Url" class="card-img-top" alt="Foto" style="height: 160px; object-fit: cover;" />
+                                <div class="card-body p-2 d-flex justify-content-between align-items-center">
+                                    @if (photo.IsMain)
+                                    {
+                                        <span class="badge bg-primary">Portada</span>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="SetMainPhoto" method="post" style="display: contents;">
+                                            <input type="hidden" name="photoId" value="@photo.Id" />
+                                            <input type="hidden" name="publicationId" value="@publication.Id" />
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">Hacer portada</button>
+                                        </form>
+                                    }
+
+                                    <form asp-action="DeletePhoto" method="post" style="display: contents;">
+                                        <input type="hidden" name="photoId" value="@photo.Id" />
+                                        <input type="hidden" name="publicationId" value="@publication.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger btnDeletePhoto" title="Eliminar foto">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info mb-0">Esta publicación todavía no tiene fotos.</div>
+            }
+        </div>
+    </div>
+
+    @* HISTORIAL DE PRECIOS *@
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Historial de precios</h5>
+        </div>
+        <div class="card-body pt-3">
+            @if (Model.PriceHistories.Any())
+            {
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Precio anterior</th>
+                            <th>Precio nuevo</th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var history in Model.PriceHistories)
+                        {
+                            <tr>
+                                <td>@history.ChangedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@($"${history.PreviousPrice:N0}")</td>
+                                <td>@($"${history.NewPrice:N0}")</td>
+                                <td>@history.UserEmail</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info mb-0">El precio no ha cambiado desde que se publicó.</div>
+            }
+        </div>
+    </div>
+
+    @* RESERVAS *@
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Reservas</h5>
+        </div>
+        <div class="card-body pt-3">
+            @if (Model.Reservations.Any())
+            {
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Teléfono</th>
+                            <th>Anticipo</th>
+                            <th>Reservada</th>
+                            <th>Vence</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var reservation in Model.Reservations)
+                        {
+                            <tr>
+                                <td>@reservation.CustomerName</td>
+                                <td>@reservation.CustomerPhone</td>
+                                <td>@($"${reservation.DepositAmount:N0}")</td>
+                                <td>@reservation.ReservedAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                                <td>@reservation.ExpiresAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
+                                <td><span class="badge @reservation.Status.BadgeClass()">@reservation.Status.ToSpanish()</span></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info mb-0">Esta publicación no tiene reservas.</div>
+            }
+        </div>
+    </div>
+
+</section>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function() {
+
+            $('.btnDeletePhoto').click(function(event) {
+
+                event.preventDefault();
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¿Desea eliminar la foto?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        const form = $(this).closest('form');
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+    </script>
+
+}

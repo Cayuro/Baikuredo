@@ -1,6 +1,8 @@
+using Baikuredo.Web.Core.Pagination.Abstractions;
+
 namespace Baikuredo.Web.Core.Pagination
 {
-    public class PaginationResponse<T>
+    public class PaginationResponse<T> : IPagination
     {
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }
