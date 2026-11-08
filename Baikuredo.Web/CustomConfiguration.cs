@@ -1,7 +1,9 @@
 using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Baikuredo.Web.Data;
+using Baikuredo.Web.Data.Entities;
 using Baikuredo.Web.Services.Abstractions;
 using Baikuredo.Web.Services.Implementations;
 
@@ -20,6 +22,9 @@ namespace Baikuredo.Web
             // Automapper
             builder.Services.AddAutoMapper(typeof(Program));
 
+            // HttpContextAccessor
+            builder.Services.AddHttpContextAccessor();
+
             // Services
             AddServices(builder);
 
@@ -31,6 +36,9 @@ namespace Baikuredo.Web
                 config.Position = NotyfPosition.BottomRight; 
             });
 
+            // Identity and Access Management (IAM)
+            AddIAM(builder);
+
             return builder;
         }
 
@@ -38,6 +46,30 @@ namespace Baikuredo.Web
         {
             builder.Services.AddScoped<ICategoriesService, CategoriesService>();
             builder.Services.AddScoped<IBrandsService, BrandsService>();
+        }
+
+        // IAM: Identity and Access Management
+        private static void AddIAM(WebApplicationBuilder builder)
+        {
+            builder.Services.AddIdentity<User, IdentityRole>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+                config.Password.RequireDigit = false;
+                config.Password.RequiredUniqueChars = 0;
+                config.Password.RequireLowercase = false;
+                config.Password.RequireUppercase = false;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequiredLength = 4;
+            }).AddEntityFrameworkStores<DataContext>()
+              .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(config =>
+            {
+                config.Cookie.Name = "BaikuredoAuth";
+                config.ExpireTimeSpan = TimeSpan.FromDays(100);
+                config.LoginPath = "/Account/Login";
+                config.AccessDeniedPath = "/Error/403";
+            });
         }
 
         public static WebApplication AddCustomWebApplicationConfiguration(this WebApplication app)
