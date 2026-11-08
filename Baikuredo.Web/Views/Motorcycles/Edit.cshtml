@@ -1,0 +1,83 @@
+@model Baikuredo.Web.DTOs.Motorcycles.UpdateMotorcycleDTO
+
+@{
+    ViewData["Title"] = "Editar moto";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Editar moto</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <input asp-for="Id" type="hidden" />
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Plate" class="form-label"></label>
+                                <input asp-for="Plate" class="form-control text-uppercase" placeholder="Ej: ABC12D" />
+                                <span asp-validation-for="Plate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Year" class="form-label"></label>
+                                <input asp-for="Year" class="form-control" />
+                                <span asp-validation-for="Year" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Displacement" class="form-label"></label>
+                                <input asp-for="Displacement" class="form-control" />
+                                <span asp-validation-for="Displacement" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="MotorcycleModelId" class="form-label"></label>
+                                <select asp-for="MotorcycleModelId" asp-items="Model.MotorcycleModels" class="form-select">
+                                    <option value="">-- Seleccione un modelo --</option>
+                                </select>
+                                <span asp-validation-for="MotorcycleModelId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CategoryId" class="form-label"></label>
+                                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+                                    <option value="">-- Seleccione una categoría --</option>
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Color" class="form-label"></label>
+                                <input asp-for="Color" class="form-control" />
+                                <span asp-validation-for="Color" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="OwnerId" class="form-label"></label>
+                                <select asp-for="OwnerId" asp-items="Model.Owners" class="form-select">
+                                    <option value="">-- Seleccione un propietario --</option>
+                                </select>
+                                <span asp-validation-for="OwnerId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Guardar cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

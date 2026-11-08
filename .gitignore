@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 *.swp
 
 .vscode/
+
+# Fotos subidas por los usuarios (no se versionan)
+Baikuredo.Web/wwwroot/uploads/

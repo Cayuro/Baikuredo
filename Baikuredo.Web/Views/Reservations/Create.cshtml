@@ -1,0 +1,66 @@
+@model Baikuredo.Web.DTOs.Reservations.CreateReservationDTO
+
+@{
+    ViewData["Title"] = "Nueva reserva";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Nueva reserva</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="MotorcyclePublicationId" class="form-label"></label>
+                            <select asp-for="MotorcyclePublicationId" asp-items="Model.Publications" class="form-select">
+                                <option value="">-- Seleccione una moto publicada --</option>
+                            </select>
+                            <span asp-validation-for="MotorcyclePublicationId" class="text-danger"></span>
+                            <div class="form-text">Solo aparecen las publicaciones disponibles.</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CustomerName" class="form-label"></label>
+                                <input asp-for="CustomerName" class="form-control" />
+                                <span asp-validation-for="CustomerName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CustomerPhone" class="form-label"></label>
+                                <input asp-for="CustomerPhone" class="form-control" />
+                                <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DepositAmount" class="form-label"></label>
+                                <input asp-for="DepositAmount" class="form-control" placeholder="Ej: 500000" />
+                                <span asp-validation-for="DepositAmount" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ExpiresAt" class="form-label"></label>
+                                <input asp-for="ExpiresAt" class="form-control" />
+                                <span asp-validation-for="ExpiresAt" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                Volver
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Guardar reserva
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

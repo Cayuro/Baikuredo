@@ -7,6 +7,8 @@ using Baikuredo.Web.Data.Entities;
 using Baikuredo.Web.Services.Abstractions;
 using Baikuredo.Web.Services.Implementations;
 using Baikuredo.Web.Data.Seeders;
+using Baikuredo.Web.Helpers.Abstractions;
+using Baikuredo.Web.Helpers.Implementations;
 
 namespace Baikuredo.Web
 {
@@ -47,6 +49,14 @@ namespace Baikuredo.Web
         {
             builder.Services.AddScoped<ICategoriesService, CategoriesService>();
             builder.Services.AddScoped<IBrandsService, BrandsService>();
+            builder.Services.AddScoped<IMotorcycleModelsService, MotorcycleModelsService>();
+            builder.Services.AddScoped<IOwnersService, OwnersService>();
+            builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
+            builder.Services.AddScoped<IPublicationsService, PublicationsService>();
+            builder.Services.AddScoped<IReservationsService, ReservationsService>();
+            builder.Services.AddScoped<IAuditService, AuditService>();
+            builder.Services.AddScoped<ISelectListHelper, SelectListHelper>();
+            builder.Services.AddScoped<ICurrentUserHelper, CurrentUserHelper>();
             builder.Services.AddTransient<SeedDb>();
         }
 
