@@ -6,6 +6,7 @@ using Baikuredo.Web.Data;
 using Baikuredo.Web.Data.Entities;
 using Baikuredo.Web.Services.Abstractions;
 using Baikuredo.Web.Services.Implementations;
+using Baikuredo.Web.Data.Seeders;
 
 namespace Baikuredo.Web
 {
@@ -46,6 +47,7 @@ namespace Baikuredo.Web
         {
             builder.Services.AddScoped<ICategoriesService, CategoriesService>();
             builder.Services.AddScoped<IBrandsService, BrandsService>();
+            builder.Services.AddTransient<SeedDb>();
         }
 
         // IAM: Identity and Access Management
@@ -75,8 +77,17 @@ namespace Baikuredo.Web
         public static WebApplication AddCustomWebApplicationConfiguration(this WebApplication app)
         {
             app.UseNotyf();
+            SeedData(app);
 
             return app;
+        }
+        private static void SeedData(WebApplication app)
+        {
+            IServiceScopeFactory scopeFactory = app.Services.GetService<IServiceScopeFactory>();
+
+            using IServiceScope scope = scopeFactory.CreateScope();
+            SeedDb service = scope.ServiceProvider.GetService<SeedDb>();
+            service.SeedAsync().Wait();
         }
     }
 }
