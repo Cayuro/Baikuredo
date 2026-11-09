@@ -35,15 +35,15 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="MotorcycleModelId" class="form-label"></label>
-                                <select asp-for="MotorcycleModelId" asp-items="Model.MotorcycleModels" class="form-select">
+                                <label asp-for="MotorcycleModelId" class="form-label">Modelo</label>
+                                <select asp-for="MotorcycleModelId" asp-items="await SelectListHelper.GetMotorcycleModelsSelectListAsync()" class="form-select">
                                     <option value="">-- Seleccione un modelo --</option>
                                 </select>
                                 <span asp-validation-for="MotorcycleModelId" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label asp-for="CategoryId" class="form-label"></label>
-                                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+                                <label asp-for="CategoryId" class="form-label">Categoría</label>
+                                <select asp-for="CategoryId" asp-items="await SelectListHelper.GetCategoriesSelectListAsync()" class="form-select">
                                     <option value="">-- Seleccione una categoría --</option>
                                 </select>
                                 <span asp-validation-for="CategoryId" class="text-danger"></span>
@@ -57,8 +57,8 @@
                                 <span asp-validation-for="Color" class="text-danger"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label asp-for="OwnerId" class="form-label"></label>
-                                <select asp-for="OwnerId" asp-items="Model.Owners" class="form-select">
+                                <label asp-for="OwnerId" class="form-label">Propietario</label>
+                                <select asp-for="OwnerId" asp-items="await SelectListHelper.GetOwnersSelectListAsync()" class="form-select">
                                     <option value="">-- Seleccione un propietario --</option>
                                 </select>
                                 <span asp-validation-for="OwnerId" class="text-danger"></span>
