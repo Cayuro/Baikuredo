@@ -116,9 +116,30 @@
 
                 </ul>
 
-                <span class="navbar-text">
-                    Sistema de gestión
-                </span>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="d-flex align-items-center gap-3">
+
+                        <span class="navbar-text">
+                            <i class="bi bi-person-circle"></i> @User.Identity.Name
+                        </span>
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="mb-0">
+                            <button type="submit" class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                            </button>
+                        </form>
+
+                    </div>
+                }
+                else
+                {
+                    <a class="btn btn-outline-light btn-sm"
+                       asp-controller="Account"
+                       asp-action="Login">
+                        Iniciar sesión
+                    </a>
+                }
 
             </div>
 
