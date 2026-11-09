@@ -50,10 +50,8 @@ namespace Baikuredo.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            CreateMotorcycleModelDTO dto = new CreateMotorcycleModelDTO
-            {
-                Brands = await _selectListHelper.GetBrandsSelectListAsync()
-            };
+            ViewBag.Brands = await _selectListHelper.GetBrandsSelectListAsync();
+            CreateMotorcycleModelDTO dto = new CreateMotorcycleModelDTO();
 
             return View(dto);
         }
@@ -65,7 +63,7 @@ namespace Baikuredo.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                dto.Brands = await _selectListHelper.GetBrandsSelectListAsync();
+                ViewBag.Brands = await _selectListHelper.GetBrandsSelectListAsync();
                 return View(dto);
             }
 
@@ -74,7 +72,7 @@ namespace Baikuredo.Web.Controllers
             if (!response.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, response.Message ?? "No fue posible crear el modelo.");
-                dto.Brands = await _selectListHelper.GetBrandsSelectListAsync();
+                ViewBag.Brands = await _selectListHelper.GetBrandsSelectListAsync();
                 return View(dto);
             }
 
@@ -95,8 +93,8 @@ namespace Baikuredo.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.Brands = await _selectListHelper.GetBrandsSelectListAsync();
             UpdateMotorcycleModelDTO dto = response.Result;
-            dto.Brands = await _selectListHelper.GetBrandsSelectListAsync();
 
             return View(dto);
         }
@@ -108,7 +106,7 @@ namespace Baikuredo.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                dto.Brands = await _selectListHelper.GetBrandsSelectListAsync();
+                ViewBag.Brands = await _selectListHelper.GetBrandsSelectListAsync();
                 return View(dto);
             }
 
@@ -117,7 +115,7 @@ namespace Baikuredo.Web.Controllers
             if (!response.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, response.Message ?? "No fue posible actualizar el modelo.");
-                dto.Brands = await _selectListHelper.GetBrandsSelectListAsync();
+                ViewBag.Brands = await _selectListHelper.GetBrandsSelectListAsync();
                 return View(dto);
             }
 

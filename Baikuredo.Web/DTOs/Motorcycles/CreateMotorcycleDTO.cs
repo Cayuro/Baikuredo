@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Baikuredo.Web.DTOs.Motorcycles
 {
@@ -36,9 +35,5 @@ namespace Baikuredo.Web.DTOs.Motorcycles
         [Display(Name = "Propietario")]
         [Required(ErrorMessage = "Debe seleccionar un propietario.")]
         public Guid? OwnerId { get; set; }
-
-        public List<SelectListItem>? MotorcycleModels { get; set; }
-        public List<SelectListItem>? Categories { get; set; }
-        public List<SelectListItem>? Owners { get; set; }
     }
 }

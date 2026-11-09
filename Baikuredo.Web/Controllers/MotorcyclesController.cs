@@ -50,8 +50,11 @@ namespace Baikuredo.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            ViewBag.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
+            ViewBag.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
+            ViewBag.Owners = await _selectListHelper.GetOwnersSelectListAsync();
+
             CreateMotorcycleDTO dto = new CreateMotorcycleDTO();
-            await LoadListsAsync(dto);
 
             return View(dto);
         }
@@ -63,7 +66,9 @@ namespace Baikuredo.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await LoadListsAsync(dto);
+                ViewBag.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
+                ViewBag.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
+                ViewBag.Owners = await _selectListHelper.GetOwnersSelectListAsync();
                 return View(dto);
             }
 
@@ -72,7 +77,9 @@ namespace Baikuredo.Web.Controllers
             if (!response.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, response.Message ?? "No fue posible registrar la moto.");
-                await LoadListsAsync(dto);
+                ViewBag.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
+                ViewBag.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
+                ViewBag.Owners = await _selectListHelper.GetOwnersSelectListAsync();
                 return View(dto);
             }
 
@@ -93,8 +100,11 @@ namespace Baikuredo.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
+            ViewBag.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
+            ViewBag.Owners = await _selectListHelper.GetOwnersSelectListAsync();
+
             UpdateMotorcycleDTO dto = response.Result;
-            await LoadListsAsync(dto);
 
             return View(dto);
         }
@@ -106,7 +116,9 @@ namespace Baikuredo.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                await LoadListsAsync(dto);
+                ViewBag.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
+                ViewBag.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
+                ViewBag.Owners = await _selectListHelper.GetOwnersSelectListAsync();
                 return View(dto);
             }
 
@@ -115,7 +127,9 @@ namespace Baikuredo.Web.Controllers
             if (!response.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, response.Message ?? "No fue posible actualizar la moto.");
-                await LoadListsAsync(dto);
+                ViewBag.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
+                ViewBag.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
+                ViewBag.Owners = await _selectListHelper.GetOwnersSelectListAsync();
                 return View(dto);
             }
 
@@ -156,22 +170,6 @@ namespace Baikuredo.Web.Controllers
             TempData["Success"] = response.Message;
 
             return RedirectToAction(nameof(Index));
-        }
-
-        // Carga las listas desplegables del formulario de crear
-        private async Task LoadListsAsync(CreateMotorcycleDTO dto)
-        {
-            dto.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
-            dto.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
-            dto.Owners = await _selectListHelper.GetOwnersSelectListAsync();
-        }
-
-        // Carga las listas desplegables del formulario de editar
-        private async Task LoadListsAsync(UpdateMotorcycleDTO dto)
-        {
-            dto.MotorcycleModels = await _selectListHelper.GetMotorcycleModelsSelectListAsync();
-            dto.Categories = await _selectListHelper.GetCategoriesSelectListAsync();
-            dto.Owners = await _selectListHelper.GetOwnersSelectListAsync();
         }
     }
 }

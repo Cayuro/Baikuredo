@@ -19,7 +19,7 @@
 
                         <div class="mb-3">
                             <label asp-for="BrandId" class="form-label">Marca</label>
-                            <select asp-for="BrandId" asp-items="await SelectListHelper.GetBrandsSelectListAsync()" class="form-select">
+                            <select asp-for="BrandId" asp-items="ViewBag.Brands" class="form-select">
                                 <option value="">-- Seleccione una marca --</option>
                             </select>
                             <span asp-validation-for="BrandId" class="text-danger"></span>
