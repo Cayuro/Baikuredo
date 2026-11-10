@@ -57,6 +57,7 @@ namespace Baikuredo.Web
             builder.Services.AddScoped<IAuditService, AuditService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
+            builder.Services.AddScoped<IRolesService, RolesService>();
             builder.Services.AddScoped<ISelectListHelper, SelectListHelper>();
             builder.Services.AddScoped<ICurrentUserHelper, CurrentUserHelper>();
             builder.Services.AddTransient<SeedDb>();
