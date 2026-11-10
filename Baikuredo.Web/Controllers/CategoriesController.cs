@@ -1,4 +1,5 @@
-﻿using Baikuredo.Web.DTOs.Categories;
+using Baikuredo.Web.Core.Pagination;
+using Baikuredo.Web.DTOs.Categories;
 using Baikuredo.Web.Services.Abstractions;
 using Baikuredo.Web.Services.Implementations;
 using Microsoft.AspNetCore.Mvc;
@@ -16,15 +17,28 @@ namespace Baikuredo.Web.Controllers
 
         // READ
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
-            var response = await _categoriesService.GetListAsync();
+            PaginationRequest request = new()
+            {
+                Page = page ?? 1,
+                RecordsPerPage = recordsPerPage ?? 15,
+                Filter = filter
+            };
+
+            var response = await _categoriesService.GetPaginatedListAsync(request);
 
             if (!response.IsSuccess || response.Result == null)
             {
                 TempData["Error"] = response.Message;
-
-                return View(new List<CategoryDTO>());
+                return View(new PaginationResponse<CategoryDTO>
+                {
+                    CurrentPage = 1,
+                    TotalPages = 0,
+                    RecordsPerPage = 15,
+                    TotalCount = 0,
+                    List = new PagedList<CategoryDTO>(new List<CategoryDTO>(), 0, 1, 15)
+                });
             }
 
             return View(response.Result);

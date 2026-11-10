@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Baikuredo.Web.Core;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.Data;
@@ -48,7 +48,9 @@ namespace Baikuredo.Web.Services.Implementations
                 // Filtrar por texto si el usuario envía un término de búsqueda
                 if (!string.IsNullOrWhiteSpace(request.Filter))
                 {
-                    query = query.Where(c => c.Name.ToLower().Contains(request.Filter.ToLower()));
+                    string filter = request.Filter.ToLower();
+                    query = query.Where(c => c.Name.ToLower().Contains(filter)
+                                          || (c.Description != null && c.Description.ToLower().Contains(filter)));
                 }
 
                 // Conteo total de registros
