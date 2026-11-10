@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Users;
 using Baikuredo.Web.Helpers.Abstractions;
 using Baikuredo.Web.Services.Abstractions;
@@ -17,14 +18,28 @@ namespace Baikuredo.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
-            var response = await _usersService.GetListAsync();
+            PaginationRequest request = new()
+            {
+                Page = page ?? 1,
+                RecordsPerPage = recordsPerPage ?? 15,
+                Filter = filter
+            };
+
+            var response = await _usersService.GetPaginatedListAsync(request);
 
             if (!response.IsSuccess || response.Result == null)
             {
                 TempData["Error"] = response.Message;
-                return View(new List<UserDTO>());
+                return View(new PaginationResponse<UserDTO>
+                {
+                    CurrentPage = 1,
+                    TotalPages = 0,
+                    RecordsPerPage = 15,
+                    TotalCount = 0,
+                    List = new PagedList<UserDTO>(new List<UserDTO>(), 0, 1, 15)
+                });
             }
 
             return View(response.Result);

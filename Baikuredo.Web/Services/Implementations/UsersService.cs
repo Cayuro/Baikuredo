@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Baikuredo.Web.Core;
+using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.Data;
 using Baikuredo.Web.Data.Entities;
 using Baikuredo.Web.DTOs.Users;
@@ -46,6 +47,61 @@ namespace Baikuredo.Web.Services.Implementations
             catch (Exception ex)
             {
                 return Response<List<UserDTO>>.Failure(ex);
+            }
+        }
+
+        public async Task<Response<PaginationResponse<UserDTO>>> GetPaginatedListAsync(PaginationRequest request)
+        {
+            try
+            {
+                IQueryable<User> query = _context.Users.AsNoTracking();
+
+                if (!string.IsNullOrWhiteSpace(request.Filter))
+                {
+                    string filter = request.Filter.ToLower();
+                    query = query.Where(u => u.FirstName.ToLower().Contains(filter)
+                                          || u.LastName.ToLower().Contains(filter)
+                                          || u.Document.ToLower().Contains(filter)
+                                          || u.Email!.ToLower().Contains(filter)
+                                          || u.BaikuredoRole!.Name.ToLower().Contains(filter));
+                }
+
+                int totalCount = await query.CountAsync();
+                int totalPages = (int)Math.Ceiling(totalCount / (double)request.RecordsPerPage);
+
+                var items = await query
+                    .OrderBy(u => u.FirstName)
+                    .ThenBy(u => u.LastName)
+                    .Skip((request.Page - 1) * request.RecordsPerPage)
+                    .Take(request.RecordsPerPage)
+                    .Select(u => new UserDTO
+                    {
+                        Id = u.Id,
+                        FullName = u.FirstName + " " + u.LastName,
+                        Email = u.Email ?? string.Empty,
+                        Document = u.Document,
+                        Phone = u.PhoneNumber,
+                        RoleName = u.BaikuredoRole != null ? u.BaikuredoRole.Name : string.Empty
+                    })
+                    .ToListAsync();
+
+                var pagedList = new PagedList<UserDTO>(items, totalCount, request.Page, request.RecordsPerPage);
+
+                var paginationResponse = new PaginationResponse<UserDTO>
+                {
+                    CurrentPage = request.Page,
+                    RecordsPerPage = request.RecordsPerPage,
+                    TotalCount = totalCount,
+                    TotalPages = totalPages,
+                    Filter = request.Filter,
+                    List = pagedList
+                };
+
+                return Response<PaginationResponse<UserDTO>>.Success(paginationResponse);
+            }
+            catch (Exception ex)
+            {
+                return Response<PaginationResponse<UserDTO>>.Failure(ex);
             }
         }
 
