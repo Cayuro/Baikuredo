@@ -16,15 +16,15 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                         <div class="mb-3">
-                            <label asp-for="BrandId" class="form-label">Marca</label>
-                            <select asp-for="BrandId" asp-items="await SelectListHelper.GetBrandsSelectListAsync()" class="form-select">
+                            <label asp-for="BrandId" class="form-label"></label>
+                            <select asp-for="BrandId" asp-items="Model.Brands" class="form-select">
                                 <option value="">-- Seleccione una marca --</option>
                             </select>
                             <span asp-validation-for="BrandId" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Name" class="form-label">Nombre del Modelo</label>
+                            <label asp-for="Name" class="form-label"></label>
                             <input asp-for="Name" class="form-control" placeholder="Ej: MT-09" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
