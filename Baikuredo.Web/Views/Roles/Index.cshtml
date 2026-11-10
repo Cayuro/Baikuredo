@@ -1,0 +1,164 @@
+@using Baikuredo.Web.DTOs.Roles
+@model Baikuredo.Web.Core.Pagination.PaginationResponse<RoleListDTO>
+
+@{
+    ViewData["Title"] = "Roles";
+}
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div class="row">
+
+                <h3 class="m-0 font-weight-bold text-primary col-md-11">@ViewData["Title"]</h3>
+
+                <div class="col-md-1 text-end">
+                    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card-body mt-3">
+
+            <form asp-action="Index" class="navbar-search" method="GET">
+
+                <input type="hidden" name="Page" value="@Model.CurrentPage" />
+
+                <div class="row mt-3">
+
+                    <div class="col-md-auto">
+                        <select asp-for="RecordsPerPage" class="form-select bg-light border-0 small">
+                            <option value="10" selected="@(Model.RecordsPerPage == 10)">10</option>
+                            <option value="15" selected="@(Model.RecordsPerPage == 15)">15</option>
+                            <option value="30" selected="@(Model.RecordsPerPage == 30)">30</option>
+                            <option value="50" selected="@(Model.RecordsPerPage == 50)">50</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." aria-label="search" asp-for="Filter" />
+                            <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <table class="table table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>Rol</th>
+                        <th>Usuarios</th>
+                        <th>Permisos</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.List != null && Model.List.Any())
+                    {
+                        @foreach (RoleListDTO item in Model.List)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.UsersCount</td>
+                                <td>@if (item.IsSuperAdmin)
+                                    {
+                                        <span class="badge bg-dark">Todos</span>
+                                    }
+                                    else
+                                    {
+                                        @item.PermissionsCount
+                                    }</td>
+                                <td>
+                                    @if (item.IsSuperAdmin)
+                                    {
+                                        <span class="text-muted small">Protegido</span>
+                                    }
+                                    else
+                                    {
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+
+                                    <form asp-action="Delete" method="POST" style="display: contents;" asp-route-id="@item.Id">
+                                        <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Eliminar">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No hay roles registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+            @await Html.PartialAsync("_PaginationComponent", Model)
+
+        </div>
+    </div>
+
+</section>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function() {
+
+            $('.btnDelete').click(function(event) {
+
+                event.preventDefault();
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¿Desea eliminar el rol?',
+                    text: "¡No podrás revertir esto!",
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        const form = $(this).closest('form');
+                        form.submit();
+                    }
+                });
+            });
+
+            $('#RecordsPerPage').change(function() {
+                $(this).closest('form').submit();
+            });
+        });
+
+    </script>
+
+}

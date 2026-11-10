@@ -1,0 +1,62 @@
+@model Baikuredo.Web.DTOs.Roles.RoleFormDTO
+
+@{
+    ViewData["Title"] = "Nuevo rol";
+}
+
+<div class="container py-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Nuevo rol</h4>
+        </div>
+        <div class="card-body pt-3">
+            <form asp-action="Create" method="post">
+
+                @await Html.PartialAsync("_PermissionsForm", Model)
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Guardar rol
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        // Marca la casilla del módulo si todos sus permisos están marcados
+        function refreshModule(module) {
+            const permissions = $('.checkPermission[data-module="' + module + '"]');
+            const checked = permissions.filter(':checked').length;
+            $('.checkModule[data-module="' + module + '"]').prop('checked', checked === permissions.length);
+        }
+
+        $(document).ready(function() {
+
+            // Al marcar "Módulo", se marcan o desmarcan todos sus permisos
+            $('.checkModule').change(function() {
+                const module = $(this).data('module');
+                $('.checkPermission[data-module="' + module + '"]').prop('checked', $(this).is(':checked'));
+            });
+
+            // Al marcar un permiso, se revisa si el módulo quedó completo
+            $('.checkPermission').change(function() {
+                refreshModule($(this).data('module'));
+            });
+
+            // Estado inicial
+            $('.checkModule').each(function() {
+                refreshModule($(this).data('module'));
+            });
+        });
+
+    </script>
+
+}
