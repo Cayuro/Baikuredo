@@ -79,5 +79,46 @@ namespace Baikuredo.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var response = await _usersService.GetOneAsync(id);
+
+            if (!response.IsSuccess || response.Result == null)
+            {
+                TempData["Error"] = response.Message;
+                return RedirectToAction(nameof(Index));
+            }
+
+            UpdateUserDTO dto = response.Result;
+            dto.Roles = await _selectListHelper.GetRolesSelectListAsync();
+
+            return View(dto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UpdateUserDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                dto.Roles = await _selectListHelper.GetRolesSelectListAsync();
+                return View(dto);
+            }
+
+            var response = await _usersService.UpdateAsync(dto);
+
+            if (!response.IsSuccess)
+            {
+                ModelState.AddModelError(string.Empty, response.Message ?? "No fue posible actualizar el usuario.");
+                dto.Roles = await _selectListHelper.GetRolesSelectListAsync();
+                return View(dto);
+            }
+
+            TempData["Success"] = response.Message;
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

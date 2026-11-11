@@ -9,5 +9,7 @@ namespace Baikuredo.Web.Services.Abstractions
         Task<Response<List<UserDTO>>> GetListAsync();
         Task<Response<PaginationResponse<UserDTO>>> GetPaginatedListAsync(PaginationRequest request);
         Task<Response<UserDTO>> CreateAsync(CreateUserDTO dto);
+        Task<Response<UpdateUserDTO>> GetOneAsync(string id);
+        Task<Response<UserDTO>> UpdateAsync(UpdateUserDTO dto);
     }
 }
