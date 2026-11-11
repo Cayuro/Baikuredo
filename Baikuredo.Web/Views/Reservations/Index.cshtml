@@ -1,6 +1,13 @@
 @using Baikuredo.Web.DTOs.Reservations
 @using Baikuredo.Web.Core.Enums
 @model Baikuredo.Web.Core.Pagination.PaginationResponse<ReservationDTO>
+@inject Baikuredo.Web.Services.Abstractions.IAccountService AccountService
+@{
+    // Cada botón se muestra solo si el rol del usuario tiene el permiso de esa acción
+    bool canCreate = await AccountService.AccountUserIsAuthorizedAsync("reservations.create");
+    bool canUpdate = await AccountService.AccountUserIsAuthorizedAsync("reservations.update");
+    bool canDelete = await AccountService.AccountUserIsAuthorizedAsync("reservations.delete");
+}
 
 @{
     ViewData["Title"] = "Reservas";
@@ -27,7 +34,10 @@
                 <h3 class="m-0 font-weight-bold text-primary col-md-11">@ViewData["Title"]</h3>
 
                 <div class="col-md-1 text-end">
-                    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                    @if (canCreate)
+                    {
+                        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                    }
                 </div>
 
             </div>
@@ -91,7 +101,7 @@
                                 <td>@item.ExpiresAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
                                 <td><span class="badge @item.Status.BadgeClass()">@item.Status.ToSpanish()</span></td>
                                 <td>
-                                    @if (item.Status == ReservationStatus.Active)
+                                    @if (canUpdate && item.Status == ReservationStatus.Active)
                                     {
                                         <form asp-action="Complete" method="POST" style="display: contents;">
                                             <input type="hidden" name="id" value="@item.Id" />
@@ -112,11 +122,14 @@
                                         <i class="bi bi-images"></i>
                                     </a>
 
-                                    <form asp-action="Delete" method="POST" style="display: contents;" asp-route-id="@item.Id">
-                                        <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Eliminar">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </form>
+                                    @if (canDelete)
+                                    {
+                                        <form asp-action="Delete" method="POST" style="display: contents;" asp-route-id="@item.Id">
+                                            <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    }
                                 </td>
                             </tr>
                         }

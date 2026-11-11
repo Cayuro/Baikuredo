@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>@ViewData["Title"] - Baikuredo</title>
+
+    @* Estilos: plantilla NiceAdmin (archivos en wwwroot/assets) *@
+    @await Html.PartialAsync("_Styles")
+</head>
+
+<body>
+
+    @* Barra superior: logo, botón del menú y datos del usuario *@
+    @await Html.PartialAsync("_Header")
+
+    @* Menú lateral: solo muestra los módulos que el rol del usuario puede ver *@
+    @await Html.PartialAsync("_Sidebar")
+
+    <main id="main" class="main">
+
+        @* Mensajes que mandan los controladores después de crear, editar o eliminar *@
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+        }
+
+        @RenderBody()
+
+    </main>
+
+    @* Pie de página *@
+    @await Html.PartialAsync("_Footer")
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    @* Scripts: jQuery, Bootstrap, SweetAlert y el main.js de la plantilla *@
+    @await Html.PartialAsync("_Scripts")
+
+    @* Scripts propios de cada vista (por ejemplo la confirmación de eliminar) *@
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>
