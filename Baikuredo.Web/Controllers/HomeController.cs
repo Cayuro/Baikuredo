@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Mvc;
+=======
+﻿using Microsoft.AspNetCore.Mvc;
+>>>>>>> 788f727 (fix: correcion de permisos, controladores y layout en Baikuredo)
 
 namespace Baikuredo.Web.Controllers
 {

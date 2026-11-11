@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
+    [CustomAuthorize("users.index")]
     public class UsersController : Controller
     {
         private readonly IUsersService _usersService;

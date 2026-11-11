@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
+    [CustomAuthorize("roles.index")]
     public class RolesController : Controller
     {
         private readonly IRolesService _rolesService;

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
-    [CustomAuthorize("Owners")]
+    [CustomAuthorize("owners.index")]
     public class OwnersController : Controller
     {
         private readonly IOwnersService _ownersService;
@@ -161,6 +161,7 @@ namespace Baikuredo.Web.Controllers
             if (!response.IsSuccess)
             {
                 TempData["Error"] = response.Message;
+
                 return RedirectToAction(nameof(Index));
             }
 
