@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Baikuredo.Web.Controllers
 {
     // Bitácora de auditoría: solo lectura
+    [CustomAuthorize("AuditLogs")]
     public class AuditLogsController : Controller
     {
         private readonly IAuditService _auditService;

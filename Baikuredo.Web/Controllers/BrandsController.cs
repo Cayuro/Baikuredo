@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
+    [CustomAuthorize("Brands")]
     public class BrandsController : Controller
     {
         private readonly IBrandsService _brandsService;

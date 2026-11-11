@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
+    [CustomAuthorize("Reservations")]
     public class ReservationsController : Controller
     {
         private readonly IReservationsService _reservationsService;

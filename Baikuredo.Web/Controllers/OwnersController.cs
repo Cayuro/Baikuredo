@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
+    [CustomAuthorize("Owners")]
     public class OwnersController : Controller
     {
         private readonly IOwnersService _ownersService;

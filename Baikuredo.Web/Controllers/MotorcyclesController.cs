@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
+    [CustomAuthorize("Motorcycles")]
     public class MotorcyclesController : Controller
     {
         private readonly IMotorcyclesService _motorcyclesService;
@@ -158,6 +159,7 @@ namespace Baikuredo.Web.Controllers
             if (!response.IsSuccess)
             {
                 TempData["Error"] = response.Message;
+
                 return RedirectToAction(nameof(Index));
             }
 

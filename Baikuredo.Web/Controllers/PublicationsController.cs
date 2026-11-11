@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
+    [CustomAuthorize("Publications")]
     public class PublicationsController : Controller
     {
         private readonly IPublicationsService _publicationsService;
