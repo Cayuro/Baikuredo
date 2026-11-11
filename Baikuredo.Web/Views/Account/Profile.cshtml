@@ -1,0 +1,70 @@
+@model Baikuredo.Web.DTOs.Account.AccountUserDTO
+
+@{
+    ViewData["Title"] = "Mi cuenta";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h4 class="mb-0">Mi cuenta</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Profile" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label"></label>
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label"></label>
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Document" class="form-label"></label>
+                                <input asp-for="Document" class="form-control" />
+                                <span asp-validation-for="Document" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Phone" class="form-label"></label>
+                                <input asp-for="Phone" class="form-control" />
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input class="form-control" value="@Model.Email" disabled />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="RoleName" class="form-label"></label>
+                                <input class="form-control" value="@Model.RoleName" disabled />
+                            </div>
+                        </div>
+
+                        <p class="text-muted small">El correo y el rol los gestiona un administrador.</p>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="ChangePassword" class="btn btn-outline-secondary">
+                                <i class="bi bi-key"></i> Cambiar contraseña
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                Guardar cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
