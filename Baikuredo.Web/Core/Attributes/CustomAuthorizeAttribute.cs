@@ -43,7 +43,8 @@ namespace Baikuredo.Web.Core.Attributes
 
             if (!isAuthorized)
             {
-                context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
+                // Tiene sesión pero su rol no tiene el permiso: se le muestra la página de acceso denegado
+                context.Result = new RedirectToActionResult("AccessDenied", "Home", null);
             }
         }
     }

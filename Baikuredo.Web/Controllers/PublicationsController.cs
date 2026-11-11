@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Publications;
 using Baikuredo.Web.Helpers.Abstractions;
@@ -19,6 +20,7 @@ namespace Baikuredo.Web.Controllers
 
         // INDEX — Listado paginado con filtro
         [HttpGet]
+        [CustomAuthorize(permissionCode: "publications.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()
@@ -48,6 +50,7 @@ namespace Baikuredo.Web.Controllers
 
         // DETAILS — Ver publicación con fotos, historial y reservas
         [HttpGet]
+        [CustomAuthorize(permissionCode: "publications.show")]
         public async Task<IActionResult> Details(Guid id)
         {
             var response = await _publicationsService.GetDetailAsync(id);
@@ -63,6 +66,7 @@ namespace Baikuredo.Web.Controllers
 
         // CREATE — Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "publications.create")]
         public async Task<IActionResult> Create()
         {
             CreatePublicationDTO dto = new CreatePublicationDTO
@@ -76,6 +80,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE — Guardar publicación
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "publications.create")]
         public async Task<IActionResult> Create(CreatePublicationDTO dto)
         {
             if (!ModelState.IsValid)
@@ -101,6 +106,7 @@ namespace Baikuredo.Web.Controllers
 
         // EDIT — Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "publications.update")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _publicationsService.GetOneAsync(id);
@@ -120,6 +126,7 @@ namespace Baikuredo.Web.Controllers
         // EDIT — Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "publications.update")]
         public async Task<IActionResult> Edit(UpdatePublicationDTO dto)
         {
             if (!ModelState.IsValid)
@@ -144,6 +151,7 @@ namespace Baikuredo.Web.Controllers
 
         // DELETE — Mostrar confirmación
         [HttpGet]
+        [CustomAuthorize(permissionCode: "publications.delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var response = await _publicationsService.GetDetailAsync(id);
@@ -161,6 +169,7 @@ namespace Baikuredo.Web.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "publications.delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var response = await _publicationsService.DeleteAsync(id);
@@ -179,6 +188,7 @@ namespace Baikuredo.Web.Controllers
         // FOTOS — Subir una foto
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "publications.update")]
         public async Task<IActionResult> AddPhoto(Guid publicationId, IFormFile photo)
         {
             var response = await _publicationsService.AddPhotoAsync(publicationId, photo);
@@ -198,6 +208,7 @@ namespace Baikuredo.Web.Controllers
         // FOTOS — Eliminar una foto
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "publications.update")]
         public async Task<IActionResult> DeletePhoto(Guid photoId, Guid publicationId)
         {
             var response = await _publicationsService.DeletePhotoAsync(photoId);
@@ -209,6 +220,7 @@ namespace Baikuredo.Web.Controllers
         // FOTOS — Elegir la portada
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "publications.update")]
         public async Task<IActionResult> SetMainPhoto(Guid photoId, Guid publicationId)
         {
             var response = await _publicationsService.SetMainPhotoAsync(photoId);

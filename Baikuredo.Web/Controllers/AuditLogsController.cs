@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.AuditLogs;
 using Baikuredo.Web.Services.Abstractions;
@@ -16,6 +17,7 @@ namespace Baikuredo.Web.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize(permissionCode: "auditlogs.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()

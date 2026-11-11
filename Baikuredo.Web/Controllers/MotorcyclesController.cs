@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Motorcycles;
 using Baikuredo.Web.Helpers.Abstractions;
@@ -19,6 +20,7 @@ namespace Baikuredo.Web.Controllers
 
         // INDEX — Listado paginado con filtro
         [HttpGet]
+        [CustomAuthorize(permissionCode: "motorcycles.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()
@@ -48,6 +50,7 @@ namespace Baikuredo.Web.Controllers
 
         // CREATE — Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "motorcycles.create")]
         public async Task<IActionResult> Create()
         {
             CreateMotorcycleDTO dto = new CreateMotorcycleDTO();
@@ -59,6 +62,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE — Guardar moto
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "motorcycles.create")]
         public async Task<IActionResult> Create(CreateMotorcycleDTO dto)
         {
             if (!ModelState.IsValid)
@@ -83,6 +87,7 @@ namespace Baikuredo.Web.Controllers
 
         // EDIT — Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "motorcycles.update")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _motorcyclesService.GetOneAsync(id);
@@ -102,6 +107,7 @@ namespace Baikuredo.Web.Controllers
         // EDIT — Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "motorcycles.update")]
         public async Task<IActionResult> Edit(UpdateMotorcycleDTO dto)
         {
             if (!ModelState.IsValid)
@@ -126,6 +132,7 @@ namespace Baikuredo.Web.Controllers
 
         // DELETE — Mostrar confirmación
         [HttpGet]
+        [CustomAuthorize(permissionCode: "motorcycles.delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var response = await _motorcyclesService.GetDetailAsync(id);
@@ -143,6 +150,7 @@ namespace Baikuredo.Web.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "motorcycles.delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var response = await _motorcyclesService.DeleteAsync(id);

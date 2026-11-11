@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Roles;
 using Baikuredo.Web.Services.Abstractions;
@@ -16,6 +17,7 @@ namespace Baikuredo.Web.Controllers
 
         // INDEX — Listado paginado con filtro
         [HttpGet]
+        [CustomAuthorize(permissionCode: "roles.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()
@@ -45,6 +47,7 @@ namespace Baikuredo.Web.Controllers
 
         // CREATE — Mostrar formulario con todos los permisos sin marcar
         [HttpGet]
+        [CustomAuthorize(permissionCode: "roles.create")]
         public async Task<IActionResult> Create()
         {
             var response = await _rolesService.GetNewFormAsync();
@@ -61,6 +64,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE — Guardar rol y sus permisos
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "roles.create")]
         public async Task<IActionResult> Create(RoleFormDTO dto)
         {
             if (!ModelState.IsValid)
@@ -85,6 +89,7 @@ namespace Baikuredo.Web.Controllers
 
         // EDIT — Mostrar formulario con los permisos del rol marcados
         [HttpGet]
+        [CustomAuthorize(permissionCode: "roles.update")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _rolesService.GetOneAsync(id);
@@ -101,6 +106,7 @@ namespace Baikuredo.Web.Controllers
         // EDIT — Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "roles.update")]
         public async Task<IActionResult> Edit(RoleFormDTO dto)
         {
             if (!ModelState.IsValid)
@@ -126,6 +132,7 @@ namespace Baikuredo.Web.Controllers
         // DELETE — Eliminar rol (la confirmación se hace en el listado)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "roles.delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var response = await _rolesService.DeleteAsync(id);

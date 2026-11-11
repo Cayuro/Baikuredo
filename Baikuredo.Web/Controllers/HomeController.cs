@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Baikuredo.Web.Controllers
 {
@@ -8,6 +8,12 @@ namespace Baikuredo.Web.Controllers
         {
             return View();
         }
+        // Se muestra cuando el usuario tiene sesión pero su rol no tiene el permiso
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

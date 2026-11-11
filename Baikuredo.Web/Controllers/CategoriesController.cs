@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Categories;
 using Baikuredo.Web.Services.Abstractions;
@@ -17,6 +18,7 @@ namespace Baikuredo.Web.Controllers
 
         // READ
         [HttpGet]
+        [CustomAuthorize(permissionCode: "categories.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()
@@ -46,6 +48,7 @@ namespace Baikuredo.Web.Controllers
 
         // CREATE - Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "categories.create")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +57,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE - Guardar categoría
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "categories.create")]
         public async Task<IActionResult> Create(CreateCategoryDTO dto)
         {
             if (!ModelState.IsValid)
@@ -80,6 +84,7 @@ namespace Baikuredo.Web.Controllers
 
         // UPDATE - Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "categories.update")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _categoriesService.GetOneAsync(id);
@@ -97,6 +102,7 @@ namespace Baikuredo.Web.Controllers
         // UPDATE - Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "categories.update")]
         public async Task<IActionResult> Edit(UpdateCategoryDTO dto)
         {
             if (!ModelState.IsValid)
@@ -123,6 +129,7 @@ namespace Baikuredo.Web.Controllers
 
         // DELETE - Mostrar confirmación
         [HttpGet]
+        [CustomAuthorize(permissionCode: "categories.delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var response = await _categoriesService.GetOneAsync(id);
@@ -141,6 +148,7 @@ namespace Baikuredo.Web.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "categories.delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var response = await _categoriesService.DeleteAsync(id);
@@ -159,6 +167,7 @@ namespace Baikuredo.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "categories.update")]
         public async Task<IActionResult> Toggle(Guid id)
         {
             var response = await _categoriesService.ToggleAsync(id);
