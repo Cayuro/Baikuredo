@@ -1,6 +1,13 @@
 @using Baikuredo.Web.DTOs.Publications
 @using Baikuredo.Web.Core.Enums
 @model Baikuredo.Web.Core.Pagination.PaginationResponse<PublicationDTO>
+@inject Baikuredo.Web.Services.Abstractions.IAccountService AccountService
+@{
+    // Cada botón se muestra solo si el rol del usuario tiene el permiso de esa acción
+    bool canCreate = await AccountService.AccountUserIsAuthorizedAsync("publications.create");
+    bool canUpdate = await AccountService.AccountUserIsAuthorizedAsync("publications.update");
+    bool canDelete = await AccountService.AccountUserIsAuthorizedAsync("publications.delete");
+}
 
 @{
     ViewData["Title"] = "Publicaciones";
@@ -27,7 +34,10 @@
                 <h3 class="m-0 font-weight-bold text-primary col-md-11">@ViewData["Title"]</h3>
 
                 <div class="col-md-1 text-end">
-                    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                    @if (canCreate)
+                    {
+                        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                    }
                 </div>
 
             </div>
@@ -94,19 +104,25 @@
                                 <td><span class="badge @item.Status.BadgeClass()">@item.Status.ToSpanish()</span></td>
                                 <td>@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd")</td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
+                                    @if (canUpdate)
+                                    {
+                                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    }
 
                                     <a class="btn btn-sm btn-success" asp-action="Details" asp-route-id="@item.Id" title="Ver detalle y fotos">
                                         <i class="bi bi-images"></i>
                                     </a>
 
-                                    <form asp-action="Delete" method="POST" style="display: contents;" asp-route-id="@item.Id">
-                                        <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Eliminar">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </form>
+                                    @if (canDelete)
+                                    {
+                                        <form asp-action="Delete" method="POST" style="display: contents;" asp-route-id="@item.Id">
+                                            <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    }
                                 </td>
                             </tr>
                         }

@@ -1,0 +1,125 @@
+@inject Baikuredo.Web.Services.Abstractions.IAccountService AccountService
+@{
+    // Cada opción del menú se muestra solo si el rol del usuario tiene el permiso "modulo.show"
+    // (el Admin ve todo porque AccountUserIsAuthorizedAsync siempre le devuelve true)
+    bool isAuthenticated = AccountService.AccountUserIsAuthenticated();
+}
+
+<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-grid"></i>
+                <span>Inicio</span>
+            </a>
+        </li>
+
+        @if (isAuthenticated)
+        {
+            if (await AccountService.AccountUserIsAuthorizedAsync("categories.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Categories" asp-action="Index">
+                        <i class="bi bi-tags"></i>
+                        <span>Categorías</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("brands.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Brands" asp-action="Index">
+                        <i class="bi bi-award"></i>
+                        <span>Marcas</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("models.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="MotorcycleModels" asp-action="Index">
+                        <i class="bi bi-diagram-3"></i>
+                        <span>Modelos</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("owners.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Owners" asp-action="Index">
+                        <i class="bi bi-person-vcard"></i>
+                        <span>Propietarios</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("motorcycles.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Motorcycles" asp-action="Index">
+                        <i class="bi bi-bicycle"></i>
+                        <span>Motos</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("publications.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Publications" asp-action="Index">
+                        <i class="bi bi-megaphone"></i>
+                        <span>Publicaciones</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("reservations.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Reservations" asp-action="Index">
+                        <i class="bi bi-calendar-check"></i>
+                        <span>Reservas</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("auditlogs.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="AuditLogs" asp-action="Index">
+                        <i class="bi bi-clipboard-data"></i>
+                        <span>Auditoría</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("users.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Users" asp-action="Index">
+                        <i class="bi bi-people"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+            }
+
+            if (await AccountService.AccountUserIsAuthorizedAsync("roles.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Roles" asp-action="Index">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Roles</span>
+                    </a>
+                </li>
+            }
+
+        }
+
+    </ul>
+
+</aside>

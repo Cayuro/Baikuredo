@@ -1,5 +1,12 @@
 @using Baikuredo.Web.DTOs.Users
 @model Baikuredo.Web.Core.Pagination.PaginationResponse<UserDTO>
+@inject Baikuredo.Web.Services.Abstractions.IAccountService AccountService
+@{
+    // Cada botón se muestra solo si el rol del usuario tiene el permiso de esa acción
+    bool canCreate = await AccountService.AccountUserIsAuthorizedAsync("users.create");
+    bool canUpdate = await AccountService.AccountUserIsAuthorizedAsync("users.update");
+    bool canDelete = await AccountService.AccountUserIsAuthorizedAsync("users.delete");
+}
 
 @{
     ViewData["Title"] = "Usuarios";
@@ -26,7 +33,10 @@
                 <h3 class="m-0 font-weight-bold text-primary col-md-11">@ViewData["Title"]</h3>
 
                 <div class="col-md-1 text-end">
-                    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                    @if (canCreate)
+                    {
+                        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                    }
                 </div>
 
             </div>
@@ -86,9 +96,12 @@
                                 <td>@(item.Phone ?? "—")</td>
                                 <td><span class="badge bg-dark">@item.RoleName</span></td>
                                 <td>
-                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
-                                        <i class="bi bi-pencil-fill"></i>
-                                    </a>
+                                    @if (canUpdate)
+                                    {
+                                        <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                                            <i class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    }
                                 </td>
                             </tr>
                         }
