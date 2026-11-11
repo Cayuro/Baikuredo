@@ -74,5 +74,91 @@ namespace Baikuredo.Web.Controllers
 
             return RedirectToAction(nameof(Login));
         }
+
+        // MI CUENTA - Ver mis datos.
+        // Solo exige tener sesión ([Authorize]): son los datos propios del usuario, no un permiso del rol.
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            Response<AccountUserDTO> response = await _accountService.GetAccountUserAsync();
+
+            if (!response.IsSuccess || response.Result is null)
+            {
+                TempData["Error"] = response.Message;
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(response.Result);
+        }
+
+        // MI CUENTA - Guardar mis datos
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(AccountUserDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                await LoadReadOnlyFieldsAsync(dto);
+                return View(dto);
+            }
+
+            Response<AccountUserDTO> response = await _accountService.UpdateAccountUserAsync(dto);
+
+            if (!response.IsSuccess)
+            {
+                ModelState.AddModelError(string.Empty, response.Message ?? "No fue posible actualizar tus datos.");
+                await LoadReadOnlyFieldsAsync(dto);
+                return View(dto);
+            }
+
+            TempData["Success"] = response.Message;
+
+            return RedirectToAction(nameof(Profile));
+        }
+
+        // MI CUENTA - Cambiar contraseña
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View(new ChangePasswordDTO());
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(dto);
+            }
+
+            Response<object> response = await _accountService.ChangePasswordAsync(dto);
+
+            if (!response.IsSuccess)
+            {
+                ModelState.AddModelError(string.Empty, response.Message ?? "No fue posible cambiar la contraseña.");
+                return View(dto);
+            }
+
+            TempData["Success"] = response.Message;
+
+            return RedirectToAction(nameof(Profile));
+        }
+
+        // El correo y el rol no viajan en el formulario: se vuelven a cargar al mostrar de nuevo la vista
+        private async Task LoadReadOnlyFieldsAsync(AccountUserDTO dto)
+        {
+            Response<AccountUserDTO> current = await _accountService.GetAccountUserAsync();
+
+            if (current.IsSuccess && current.Result is not null)
+            {
+                dto.Email = current.Result.Email;
+                dto.RoleName = current.Result.RoleName;
+            }
+        }
     }
 }

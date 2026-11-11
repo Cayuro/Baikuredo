@@ -11,6 +11,11 @@ namespace Baikuredo.Web.Services.Abstractions
         Task LogoutAsync();
         bool AccountUserIsAuthenticated();
 
+        // Mi cuenta (siempre sobre el usuario de la sesión actual)
+        Task<Response<AccountUserDTO>> GetAccountUserAsync();
+        Task<Response<AccountUserDTO>> UpdateAccountUserAsync(AccountUserDTO dto);
+        Task<Response<object>> ChangePasswordAsync(ChangePasswordDTO dto);
+
         // Autorización (los usa CustomAuthorizeAttribute)
         Task<bool> AccountUserIsAuthorizedAsync(string permissionCode);
         Task<bool> AccountUserIsSuperAdminAsync();
