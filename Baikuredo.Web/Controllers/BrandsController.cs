@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Brands;
 using Baikuredo.Web.Services.Abstractions;
@@ -16,6 +17,7 @@ namespace Baikuredo.Web.Controllers
 
         // INDEX — Listado paginado con filtro
         [HttpGet]
+        [CustomAuthorize(permissionCode: "brands.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()
@@ -45,6 +47,7 @@ namespace Baikuredo.Web.Controllers
 
         // CREATE — Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "brands.create")]
         public IActionResult Create()
         {
             return View();
@@ -53,6 +56,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE — Guardar marca
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "brands.create")]
         public async Task<IActionResult> Create(CreateBrandDTO dto)
         {
             if (!ModelState.IsValid)
@@ -79,6 +83,7 @@ namespace Baikuredo.Web.Controllers
 
         // EDIT — Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "brands.update")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var response = await _brandsService.GetOneAsync(id);
@@ -96,6 +101,7 @@ namespace Baikuredo.Web.Controllers
         // EDIT — Guardar cambios
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "brands.update")]
         public async Task<IActionResult> Edit(UpdateBrandDTO dto)
         {
             if (!ModelState.IsValid)
@@ -122,6 +128,7 @@ namespace Baikuredo.Web.Controllers
 
         // DELETE — Mostrar confirmación
         [HttpGet]
+        [CustomAuthorize(permissionCode: "brands.delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var response = await _brandsService.GetOneAsync(id);
@@ -140,6 +147,7 @@ namespace Baikuredo.Web.Controllers
         [HttpPost]
         [ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "brands.delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var response = await _brandsService.DeleteAsync(id);
@@ -159,6 +167,7 @@ namespace Baikuredo.Web.Controllers
         // TOGGLE — Activar/Desactivar
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "brands.update")]
         public async Task<IActionResult> Toggle(Guid id)
         {
             var response = await _brandsService.ToggleAsync(id);

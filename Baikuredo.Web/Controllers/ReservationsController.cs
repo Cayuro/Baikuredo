@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Reservations;
 using Baikuredo.Web.Helpers.Abstractions;
@@ -19,6 +20,7 @@ namespace Baikuredo.Web.Controllers
 
         // INDEX — Listado paginado con filtro
         [HttpGet]
+        [CustomAuthorize(permissionCode: "reservations.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()
@@ -48,6 +50,7 @@ namespace Baikuredo.Web.Controllers
 
         // CREATE — Mostrar formulario
         [HttpGet]
+        [CustomAuthorize(permissionCode: "reservations.create")]
         public async Task<IActionResult> Create()
         {
             CreateReservationDTO dto = new CreateReservationDTO
@@ -62,6 +65,7 @@ namespace Baikuredo.Web.Controllers
         // CREATE — Guardar reserva
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "reservations.create")]
         public async Task<IActionResult> Create(CreateReservationDTO dto)
         {
             if (!ModelState.IsValid)
@@ -87,6 +91,7 @@ namespace Baikuredo.Web.Controllers
         // COMPLETE — La moto se vendió
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "reservations.update")]
         public async Task<IActionResult> Complete(Guid id)
         {
             var response = await _reservationsService.CompleteAsync(id);
@@ -98,6 +103,7 @@ namespace Baikuredo.Web.Controllers
         // EXPIRE — El cliente no volvió, se libera la moto
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "reservations.update")]
         public async Task<IActionResult> Expire(Guid id)
         {
             var response = await _reservationsService.ExpireAsync(id);
@@ -109,6 +115,7 @@ namespace Baikuredo.Web.Controllers
         // DELETE — Eliminar reserva
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "reservations.delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var response = await _reservationsService.DeleteAsync(id);

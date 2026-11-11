@@ -83,7 +83,7 @@ namespace Baikuredo.Web
                 config.Cookie.Name = "BaikuredoAuth";
                 config.ExpireTimeSpan = TimeSpan.FromDays(100);
                 config.LoginPath = "/Account/Login";
-                config.AccessDeniedPath = "/Error/403";
+                config.AccessDeniedPath = "/Home/AccessDenied";
             });
         }
 

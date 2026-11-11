@@ -1,3 +1,18 @@
+@inject Baikuredo.Web.Services.Abstractions.IAccountService AccountService
+@{
+    // Cada enlace del menú se muestra solo si el rol del usuario tiene el permiso de ver ese módulo
+    bool isAuthenticated = AccountService.AccountUserIsAuthenticated();
+    bool canCategories = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("categories.show");
+    bool canBrands = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("brands.show");
+    bool canMotorcycleModels = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("models.show");
+    bool canOwners = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("owners.show");
+    bool canMotorcycles = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("motorcycles.show");
+    bool canPublications = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("publications.show");
+    bool canReservations = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("reservations.show");
+    bool canAuditLogs = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("auditlogs.show");
+    bool canUsers = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("users.show");
+    bool canRoles = isAuthenticated && await AccountService.AccountUserIsAuthorizedAsync("roles.show");
+}
 <!DOCTYPE html>
 <html lang="es">
 
@@ -50,85 +65,115 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Categories"
-                           asp-action="Index">
-                            Categorías
-                        </a>
-                    </li>
+                    @if (canCategories)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Categories"
+                               asp-action="Index">
+                                Categorías
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Brands"
-                           asp-action="Index">
-                            Marcas
-                        </a>
-                    </li>
+                    @if (canBrands)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Brands"
+                               asp-action="Index">
+                                Marcas
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="MotorcycleModels"
-                           asp-action="Index">
-                            Modelos
-                        </a>
-                    </li>
+                    @if (canMotorcycleModels)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="MotorcycleModels"
+                               asp-action="Index">
+                                Modelos
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Owners"
-                           asp-action="Index">
-                            Propietarios
-                        </a>
-                    </li>
+                    @if (canOwners)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Owners"
+                               asp-action="Index">
+                                Propietarios
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Motorcycles"
-                           asp-action="Index">
-                            Motos
-                        </a>
-                    </li>
+                    @if (canMotorcycles)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Motorcycles"
+                               asp-action="Index">
+                                Motos
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Publications"
-                           asp-action="Index">
-                            Publicaciones
-                        </a>
-                    </li>
+                    @if (canPublications)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Publications"
+                               asp-action="Index">
+                                Publicaciones
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Reservations"
-                           asp-action="Index">
-                            Reservas
-                        </a>
-                    </li>
+                    @if (canReservations)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Reservations"
+                               asp-action="Index">
+                                Reservas
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="AuditLogs"
-                           asp-action="Index">
-                            Auditoría
-                        </a>
-                    </li>
+                    @if (canAuditLogs)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="AuditLogs"
+                               asp-action="Index">
+                                Auditoría
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Users"
-                           asp-action="Index">
-                            Usuarios
-                        </a>
-                    </li>
+                    @if (canUsers)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Users"
+                               asp-action="Index">
+                                Usuarios
+                            </a>
+                        </li>
+                    }
 
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           asp-controller="Roles"
-                           asp-action="Index">
-                            Roles
-                        </a>
-                    </li>
+                    @if (canRoles)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Roles"
+                               asp-action="Index">
+                                Roles
+                            </a>
+                        </li>
+                    }
 
                 </ul>
 

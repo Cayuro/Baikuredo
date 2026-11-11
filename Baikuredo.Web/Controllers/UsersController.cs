@@ -1,3 +1,4 @@
+using Baikuredo.Web.Core.Attributes;
 using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.DTOs.Users;
 using Baikuredo.Web.Helpers.Abstractions;
@@ -18,6 +19,7 @@ namespace Baikuredo.Web.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize(permissionCode: "users.show")]
         public async Task<IActionResult> Index([FromQuery] int? page, [FromQuery] int? recordsPerPage, [FromQuery] string? filter)
         {
             PaginationRequest request = new()
@@ -46,6 +48,7 @@ namespace Baikuredo.Web.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize(permissionCode: "users.create")]
         public async Task<IActionResult> Create()
         {
             CreateUserDTO dto = new CreateUserDTO
@@ -58,6 +61,7 @@ namespace Baikuredo.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "users.create")]
         public async Task<IActionResult> Create(CreateUserDTO dto)
         {
             if (!ModelState.IsValid)
@@ -81,6 +85,7 @@ namespace Baikuredo.Web.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize(permissionCode: "users.update")]
         public async Task<IActionResult> Edit(string id)
         {
             var response = await _usersService.GetOneAsync(id);
@@ -99,6 +104,7 @@ namespace Baikuredo.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CustomAuthorize(permissionCode: "users.update")]
         public async Task<IActionResult> Edit(UpdateUserDTO dto)
         {
             if (!ModelState.IsValid)
