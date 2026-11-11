@@ -70,6 +70,7 @@
                         <th>Correo</th>
                         <th>Teléfono</th>
                         <th>Rol</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
 
@@ -84,13 +85,18 @@
                                 <td>@item.Email</td>
                                 <td>@(item.Phone ?? "—")</td>
                                 <td><span class="badge bg-dark">@item.RoleName</span></td>
+                                <td>
+                                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id" title="Editar">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                </td>
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="5" class="text-center">No hay usuarios registrados.</td>
+                            <td colspan="6" class="text-center">No hay usuarios registrados.</td>
                         </tr>
                     }
                 </tbody>

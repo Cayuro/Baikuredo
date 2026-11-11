@@ -169,5 +169,110 @@ namespace Baikuredo.Web.Services.Implementations
                 return Response<UserDTO>.Failure(ex);
             }
         }
+
+        public async Task<Response<UpdateUserDTO>> GetOneAsync(string id)
+        {
+            try
+            {
+                User? user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+
+                if (user is null)
+                {
+                    return Response<UpdateUserDTO>.Failure("No se encontró el usuario.");
+                }
+
+                UpdateUserDTO dto = _mapper.Map<UpdateUserDTO>(user);
+
+                return Response<UpdateUserDTO>.Success(dto);
+            }
+            catch (Exception ex)
+            {
+                return Response<UpdateUserDTO>.Failure(ex);
+            }
+        }
+
+        public async Task<Response<UserDTO>> UpdateAsync(UpdateUserDTO dto)
+        {
+            try
+            {
+                User? user = await _userManager.FindByIdAsync(dto.Id);
+                if (user is null)
+                {
+                    return Response<UserDTO>.Failure("El usuario no existe.");
+                }
+
+                string email = dto.Email.Trim();
+                string document = dto.Document.Trim();
+
+                User? existingByEmail = await _userManager.FindByEmailAsync(email);
+                if (existingByEmail is not null && existingByEmail.Id != user.Id)
+                {
+                    return Response<UserDTO>.Failure("Ya existe un usuario con ese correo.");
+                }
+
+                bool documentExists = await _context.Users
+                    .AnyAsync(u => u.Document.ToLower() == document.ToLower() && u.Id != user.Id);
+                if (documentExists)
+                {
+                    return Response<UserDTO>.Failure("Ya existe un usuario con ese documento.");
+                }
+
+                bool roleExists = await _context.BaikuredoRoles.AnyAsync(r => r.Id == dto.BaikuredoRoleId);
+                if (!roleExists)
+                {
+                    return Response<UserDTO>.Failure("El rol seleccionado no existe.");
+                }
+
+                user.Document = document;
+                user.FirstName = dto.FirstName.Trim();
+                user.LastName = dto.LastName.Trim();
+                user.PhoneNumber = string.IsNullOrWhiteSpace(dto.Phone) ? null : dto.Phone.Trim();
+                user.BaikuredoRoleId = dto.BaikuredoRoleId!.Value;
+                user.Email = email;
+                user.UserName = email;
+                user.NormalizedEmail = _userManager.NormalizeEmail(email);
+                user.NormalizedUserName = _userManager.NormalizeName(email);
+
+                IdentityResult result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    string errors = string.Join(" ", result.Errors.Select(e => e.Description));
+                    return Response<UserDTO>.Failure(errors);
+                }
+
+                if (!string.IsNullOrWhiteSpace(dto.Password))
+                {
+                    string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    IdentityResult passwordResult = await _userManager.ResetPasswordAsync(user, token, dto.Password);
+
+                    if (!passwordResult.Succeeded)
+                    {
+                        string errors = string.Join(" ", passwordResult.Errors.Select(e => e.Description));
+                        return Response<UserDTO>.Failure(errors);
+                    }
+                }
+
+                string? roleName = await _context.BaikuredoRoles
+                    .Where(r => r.Id == user.BaikuredoRoleId)
+                    .Select(r => r.Name)
+                    .FirstOrDefaultAsync();
+
+                UserDTO resultDto = new UserDTO
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email ?? email,
+                    Document = user.Document,
+                    Phone = user.PhoneNumber,
+                    RoleName = roleName ?? string.Empty
+                };
+
+                return Response<UserDTO>.Success(resultDto, "Usuario actualizado exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                return Response<UserDTO>.Failure(ex);
+            }
+        }
     }
 }
