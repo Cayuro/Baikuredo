@@ -1,0 +1,126 @@
+@using Baikuredo.Web.DTOs.Catalog
+@model Baikuredo.Web.Core.Pagination.PaginationResponse<CatalogItemDTO>
+
+@{
+    ViewData["Title"] = "Catálogo de Motos";
+}
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard">
+
+    <div class="card">
+
+        <div class="card-header">
+            <h3 class="m-0 font-weight-bold text-primary">Motos disponibles</h3>
+        </div>
+
+        <div class="card-body mt-3">
+
+            <form asp-action="Index" class="navbar-search" method="GET">
+
+                <input type="hidden" name="Page" value="1" />
+
+                <div class="row mt-3">
+
+                    <div class="col-md-auto">
+                        <select asp-for="RecordsPerPage" class="form-select bg-light border-0 small">
+                            <option value="6" selected="@(Model.RecordsPerPage == 6)">6</option>
+                            <option value="12" selected="@(Model.RecordsPerPage == 12)">12</option>
+                            <option value="24" selected="@(Model.RecordsPerPage == 24)">24</option>
+                            <option value="48" selected="@(Model.RecordsPerPage == 48)">48</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar por marca, modelo, categoría, año o color..." aria-label="search" asp-for="Filter" />
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+            @if (Model.List != null && Model.List.Any())
+            {
+                <div class="row">
+                    @foreach (CatalogItemDTO item in Model.List)
+                    {
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                @if (!string.IsNullOrEmpty(item.MainPhotoUrl))
+                                {
+                                    <img src="@item.MainPhotoUrl" class="card-img-top" alt="@item.BrandName @item.ModelName" style="height: 220px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light d-flex flex-column align-items-center justify-content-center text-muted" style="height: 220px;">
+                                        <i class="bi bi-bicycle" style="font-size: 3rem;"></i>
+                                        <span class="small">Sin foto de portada</span>
+                                    </div>
+                                }
+
+                                <div class="card-body d-flex flex-column pt-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title p-0 m-0">@item.BrandName @item.ModelName</h5>
+                                        <span class="badge bg-secondary">@item.CategoryName</span>
+                                    </div>
+
+                                    <h4 class="text-primary fw-bold mb-3">@($"${item.SalePrice:N0}")</h4>
+
+                                    <ul class="list-unstyled small text-muted mb-3">
+                                        <li><i class="bi bi-calendar3 me-1"></i> <strong>Año:</strong> @item.Year</li>
+                                        <li><i class="bi bi-speedometer2 me-1"></i> <strong>Kilometraje:</strong> @($"{item.Mileage:N0} km")</li>
+                                        <li><i class="bi bi-gear me-1"></i> <strong>Cilindraje:</strong> @item.Displacement cc</li>
+                                        <li><i class="bi bi-palette me-1"></i> <strong>Color:</strong> @item.Color</li>
+                                    </ul>
+
+                                    @if (!string.IsNullOrWhiteSpace(item.Description))
+                                    {
+                                        <p class="card-text small text-truncate mb-3">@item.Description</p>
+                                    }
+
+                                    <div class="mt-auto">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary w-100">
+                                            <i class="bi bi-eye"></i> Ver detalle y fotos
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info text-center my-4">
+                    No se encontraron motocicletas disponibles en este momento.
+                </div>
+            }
+
+            @await Html.PartialAsync("_PaginationComponent", Model)
+
+        </div>
+    </div>
+
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#RecordsPerPage').change(function () {
+                $(this).closest('form').submit();
+            });
+        });
+    </script>
+}
