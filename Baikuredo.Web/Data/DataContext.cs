@@ -20,6 +20,7 @@ namespace Baikuredo.Web.Data
         public DbSet<PriceHistory> PriceHistories { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<Interest> Interests { get; set; }
         public DbSet<BaikuredoRole> BaikuredoRoles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
@@ -144,6 +145,27 @@ namespace Baikuredo.Web.Data
                 .WithMany()
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Motorcycle -> User (quién registró la moto)
+            builder.Entity<Motorcycle>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Interest -> MotorcyclePublication (los interesados se borran junto con su publicación)
+            builder.Entity<Interest>()
+                .HasOne(i => i.MotorcyclePublication)
+                .WithMany(p => p.Interests)
+                .HasForeignKey(i => i.MotorcyclePublicationId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Interest -> User (quién atendió al interesado)
+            builder.Entity<Interest>()
+                .HasOne(i => i.AttendedByUser)
+                .WithMany()
+                .HasForeignKey(i => i.AttendedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private void ConfigureIndexes(ModelBuilder builder)
@@ -165,6 +187,10 @@ namespace Baikuredo.Web.Data
             // AuditLogs (se consulta por fecha)
             builder.Entity<AuditLog>()
                 .HasIndex(a => a.CreatedAt);
+
+            // Interests (se listan del más reciente al más antiguo)
+            builder.Entity<Interest>()
+                .HasIndex(i => i.CreatedAt);
 
             // Roles
             builder.Entity<BaikuredoRole>()

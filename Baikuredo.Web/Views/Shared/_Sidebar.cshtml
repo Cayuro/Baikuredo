@@ -88,6 +88,16 @@
                 </li>
             }
 
+            if (await AccountService.AccountUserIsAuthorizedAsync("interests.show"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link collapsed" asp-controller="Interests" asp-action="Index">
+                        <i class="bi bi-chat-left-text"></i>
+                        <span>Interesados</span>
+                    </a>
+                </li>
+            }
+
             if (await AccountService.AccountUserIsAuthorizedAsync("auditlogs.show"))
             {
                 <li class="nav-item">

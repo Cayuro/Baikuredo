@@ -129,6 +129,58 @@ namespace Baikuredo.Web.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Baikuredo.Web.Data.Entities.Interest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("AttendedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("AttendedByUserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsAttended")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid>("MotorcyclePublicationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AttendedByUserId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("MotorcyclePublicationId");
+
+                    b.ToTable("Interests");
+                });
+
             modelBuilder.Entity("Baikuredo.Web.Data.Entities.Motorcycle", b =>
                 {
                     b.Property<Guid>("Id")
@@ -157,6 +209,10 @@ namespace Baikuredo.Web.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
@@ -170,6 +226,8 @@ namespace Baikuredo.Web.Migrations
 
                     b.HasIndex("Plate")
                         .IsUnique();
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Motorcycles");
                 });
@@ -677,6 +735,24 @@ namespace Baikuredo.Web.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Baikuredo.Web.Data.Entities.Interest", b =>
+                {
+                    b.HasOne("Baikuredo.Web.Data.Entities.User", "AttendedByUser")
+                        .WithMany()
+                        .HasForeignKey("AttendedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Baikuredo.Web.Data.Entities.MotorcyclePublication", "MotorcyclePublication")
+                        .WithMany("Interests")
+                        .HasForeignKey("MotorcyclePublicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AttendedByUser");
+
+                    b.Navigation("MotorcyclePublication");
+                });
+
             modelBuilder.Entity("Baikuredo.Web.Data.Entities.Motorcycle", b =>
                 {
                     b.HasOne("Baikuredo.Web.Data.Entities.Category", "Category")
@@ -697,11 +773,18 @@ namespace Baikuredo.Web.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Baikuredo.Web.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Category");
 
                     b.Navigation("MotorcycleModel");
 
                     b.Navigation("Owner");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Baikuredo.Web.Data.Entities.MotorcycleModel", b =>
@@ -876,6 +959,8 @@ namespace Baikuredo.Web.Migrations
 
             modelBuilder.Entity("Baikuredo.Web.Data.Entities.MotorcyclePublication", b =>
                 {
+                    b.Navigation("Interests");
+
                     b.Navigation("Photos");
 
                     b.Navigation("PriceHistories");

@@ -14,7 +14,7 @@ namespace Baikuredo.Web.Data.Seeders
 
         public async Task SeedAsync()
         {
-            List<Permission> permissions = [..Brands(), ..MotorcycleModels(), ..Categories(), ..Owners(), ..Motorcycles(), ..Publications(), ..Reservations(), ..AuditLogs(), ..Users(), ..Roles()];
+            List<Permission> permissions = [..Brands(), ..MotorcycleModels(), ..Categories(), ..Owners(), ..Motorcycles(), ..Publications(), ..Reservations(), ..Interests(), ..AuditLogs(), ..Users(), ..Roles()];
 
             foreach (Permission permission in permissions)
             {
@@ -103,6 +103,16 @@ namespace Baikuredo.Web.Data.Seeders
                 new Permission { Id = Guid.NewGuid(), Code = "reservations.create", Description = "Crear Reservas", Module = "Reservas" },
                 new Permission { Id = Guid.NewGuid(), Code = "reservations.update", Description = "Editar Reservas", Module = "Reservas" },
                 new Permission { Id = Guid.NewGuid(), Code = "reservations.delete", Description = "Eliminar Reservas", Module = "Reservas" },
+            };
+        }
+
+        private List<Permission> Interests()
+        {
+            return new List<Permission>
+            {
+                new Permission { Id = Guid.NewGuid(), Code = "interests.show", Description = "Ver Interesados", Module = "Interesados" },
+                new Permission { Id = Guid.NewGuid(), Code = "interests.update", Description = "Atender Interesados", Module = "Interesados" },
+                new Permission { Id = Guid.NewGuid(), Code = "interests.delete", Description = "Eliminar Interesados", Module = "Interesados" },
             };
         }
 

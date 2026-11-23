@@ -38,5 +38,6 @@ namespace Baikuredo.Web.Data.Entities
         public ICollection<MotorcyclePhoto>? Photos { get; set; }
         public ICollection<PriceHistory>? PriceHistories { get; set; }
         public ICollection<Reservation>? Reservations { get; set; }
+        public ICollection<Interest>? Interests { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace Baikuredo.Web.Data.Seeders
             await CheckRoleAsync(Env.SUPER_ADMIN_ROLE_NAME, new List<string>());
 
             // Auxiliar: gestiona el catálogo, las motos, las publicaciones y las reservas
-            await CheckRoleAsync(ASSISTANT_ROLE_NAME, new List<string> { "Marcas", "Modelos", "Categorias", "Propietarios", "Motos", "Publicaciones", "Reservas" });
+            await CheckRoleAsync(ASSISTANT_ROLE_NAME, new List<string> { "Marcas", "Modelos", "Categorias", "Propietarios", "Motos", "Publicaciones", "Reservas", "Interesados" });
 
             // Cliente: por ahora sin permisos de administración
             await CheckRoleAsync(CLIENT_ROLE_NAME, new List<string>());
