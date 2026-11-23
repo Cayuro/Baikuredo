@@ -53,6 +53,7 @@ namespace Baikuredo.Web
             builder.Services.AddScoped<IOwnersService, OwnersService>();
             builder.Services.AddScoped<IMotorcyclesService, MotorcyclesService>();
             builder.Services.AddScoped<IPublicationsService, PublicationsService>();
+            builder.Services.AddScoped<ICatalogService, CatalogService>();
             builder.Services.AddScoped<IReservationsService, ReservationsService>();
             builder.Services.AddScoped<IInterestsService, InterestsService>();
             builder.Services.AddScoped<IAuditService, AuditService>();
