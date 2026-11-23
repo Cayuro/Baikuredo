@@ -31,6 +31,12 @@ namespace Baikuredo.Web.Data.Entities
         public Guid OwnerId { get; set; }
         public Owner? Owner { get; set; }
 
+        // Usuario que registró la moto (F006). Es opcional porque las motos del seeder
+        // se crean antes que los usuarios.
+        [MaxLength(450)]
+        public string? UserId { get; set; }
+        public User? User { get; set; }
+
         public ICollection<MotorcyclePublication>? Publications { get; set; }
     }
 }

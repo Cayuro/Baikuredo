@@ -4,17 +4,24 @@ using Baikuredo.Web.Core.Pagination;
 using Baikuredo.Web.Data;
 using Baikuredo.Web.Data.Entities;
 using Baikuredo.Web.DTOs.Motorcycles;
+using Baikuredo.Web.Helpers.Abstractions;
 using Baikuredo.Web.Services.Abstractions;
 
 namespace Baikuredo.Web.Services.Implementations
 {
     public class MotorcyclesService : IMotorcyclesService
     {
-        private readonly DataContext _context;
+        private const string TABLE_NAME = "Motorcycles";
 
-        public MotorcyclesService(DataContext context)
+        private readonly DataContext _context;
+        private readonly IAuditService _auditService;
+        private readonly ICurrentUserHelper _currentUserHelper;
+
+        public MotorcyclesService(DataContext context, IAuditService auditService, ICurrentUserHelper currentUserHelper)
         {
             _context = context;
+            _auditService = auditService;
+            _currentUserHelper = currentUserHelper;
         }
 
         public async Task<Response<PaginationResponse<MotorcycleDTO>>> GetPaginatedListAsync(PaginationRequest request)
@@ -157,6 +164,9 @@ namespace Baikuredo.Web.Services.Implementations
                     return Response<MotorcycleDTO>.Failure(relationError);
                 }
 
+                // Usuario que registra la moto (F006)
+                string userId = await _currentUserHelper.GetCurrentUserIdAsync();
+
                 var entity = new Motorcycle
                 {
                     Id = Guid.CreateVersion7(),
@@ -166,10 +176,12 @@ namespace Baikuredo.Web.Services.Implementations
                     Color = dto.Color.Trim(),
                     MotorcycleModelId = dto.MotorcycleModelId!.Value,
                     CategoryId = dto.CategoryId!.Value,
-                    OwnerId = dto.OwnerId!.Value
+                    OwnerId = dto.OwnerId!.Value,
+                    UserId = userId
                 };
 
                 await _context.Motorcycles.AddAsync(entity);
+                await _auditService.AddLogAsync(userId, "CREAR", TABLE_NAME, entity.Id, $"Moto {plate}");
                 await _context.SaveChangesAsync();
 
                 return Response<MotorcycleDTO>.Success("Moto registrada exitosamente.");

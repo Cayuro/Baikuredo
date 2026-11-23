@@ -1,0 +1,185 @@
+@using Baikuredo.Web.DTOs.Interests
+@model Baikuredo.Web.Core.Pagination.PaginationResponse<InterestDTO>
+@inject Baikuredo.Web.Services.Abstractions.IAccountService AccountService
+@{
+    // Cada botón se muestra solo si el rol del usuario tiene el permiso de esa acción
+    bool canUpdate = await AccountService.AccountUserIsAuthorizedAsync("interests.update");
+    bool canDelete = await AccountService.AccountUserIsAuthorizedAsync("interests.delete");
+}
+
+@{
+    ViewData["Title"] = "Interesados";
+}
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Inicio</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard">
+
+    <div class="card">
+
+        <div class="card-header">
+            <h3 class="m-0 font-weight-bold text-primary">@ViewData["Title"]</h3>
+        </div>
+
+        <div class="card-body mt-3">
+
+            <form asp-action="Index" class="navbar-search" method="GET">
+
+                <input type="hidden" name="Page" value="@Model.CurrentPage" />
+
+                <div class="row mt-3">
+
+                    <div class="col-md-auto">
+                        <select asp-for="RecordsPerPage" class="form-select bg-light border-0 small">
+                            <option value="10" selected="@(Model.RecordsPerPage == 10)">10</option>
+                            <option value="15" selected="@(Model.RecordsPerPage == 15)">15</option>
+                            <option value="30" selected="@(Model.RecordsPerPage == 30)">30</option>
+                            <option value="50" selected="@(Model.RecordsPerPage == 50)">50</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-10">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar por nombre, correo, teléfono o placa..." aria-label="search" asp-for="Filter" />
+                            <button class="btn btn-primary"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <table class="table table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Moto</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Mensaje</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.List != null && Model.List.Any())
+                    {
+                        @foreach (InterestDTO item in Model.List)
+                        {
+                            <tr>
+                                <td>@item.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@item.MotorcycleText</td>
+                                <td>@item.FullName</td>
+                                <td>@item.Email</td>
+                                <td>@item.Phone</td>
+                                <td>@(item.Message ?? "—")</td>
+                                <td>
+                                    @if (item.IsAttended)
+                                    {
+                                        <span class="badge bg-success" title="@item.AttendedByEmail">Atendido</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Pendiente</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (canUpdate)
+                                    {
+                                        <form asp-action="ToggleAttended" method="POST" style="display: contents;">
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            @if (item.IsAttended)
+                                            {
+                                                <button class="btn btn-sm btn-secondary" title="Volver a pendiente">
+                                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-sm btn-success" title="Marcar como atendido">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            }
+                                        </form>
+                                    }
+
+                                    <a class="btn btn-sm btn-info" asp-controller="Publications" asp-action="Details" asp-route-id="@item.MotorcyclePublicationId" title="Ver publicación">
+                                        <i class="bi bi-images"></i>
+                                    </a>
+
+                                    @if (canDelete)
+                                    {
+                                        <form asp-action="Delete" method="POST" style="display: contents;" asp-route-id="@item.Id">
+                                            <button type="submit" class="btn btn-sm btn-danger btnDelete" title="Eliminar">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No hay interesados registrados.</td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+            @await Html.PartialAsync("_PaginationComponent", Model)
+
+        </div>
+    </div>
+
+</section>
+
+@section Scripts {
+
+    <script>
+
+        $(document).ready(function() {
+
+            $('.btnDelete').click(function(event) {
+
+                event.preventDefault();
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¿Desea eliminar el interesado?',
+                    text: "¡No podrás revertir esto!",
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        const form = $(this).closest('form');
+                        form.submit();
+                    }
+                });
+            });
+
+            $('#RecordsPerPage').change(function() {
+                $(this).closest('form').submit();
+            });
+        });
+
+    </script>
+
+}
