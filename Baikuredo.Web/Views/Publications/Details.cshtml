@@ -32,6 +32,15 @@
                 <span class="badge @publication.Status.BadgeClass() ms-2">@publication.Status.ToSpanish()</span>
             </h4>
             <div>
+                @if (publication.Status.ToSpanish() == "Disponible")
+                {
+                    <a asp-controller="Catalog"
+                       asp-action="Details"
+                       asp-route-id="@publication.Id"
+                       class="btn btn-primary btn-sm">
+                        <i class="bi bi-box-arrow-up-right"></i> Ver en el catálogo
+                    </a>
+                }
                 @if (canUpdate)
                 {
                     <a asp-action="Edit" asp-route-id="@publication.Id" class="btn btn-warning btn-sm">
