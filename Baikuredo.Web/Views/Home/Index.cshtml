@@ -1,28 +1,145 @@
+@model Baikuredo.Web.DTOs.Dashboard.DashboardDTO?
+
 @{
     ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center py-5">
+@if (Model is null)
+{
+    @* Sin sesión: el inicio se queda como estaba, con el botón del catálogo *@
+    <div class="text-center py-5">
 
-    <h1 class="display-4 fw-bold">
-        Baikuredo
-    </h1>
+        <h1 class="display-4 fw-bold">
+            Baikuredo
+        </h1>
 
-    <p class="lead">
-        Sistema de gestión para la venta de motos usadas
-    </p>
+        <p class="lead">
+            Sistema de gestión para la venta de motos usadas
+        </p>
 
-    <hr class="my-4" />
+        <hr class="my-4" />
 
-    <p>
-        Administra propietarios, motos, publicaciones e interesados
-        desde una sola plataforma.
-    </p>
+        <p>
+            Administra propietarios, motos, publicaciones e interesados
+            desde una sola plataforma.
+        </p>
 
-    <div class="mt-4">
-        <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary btn-lg">
-            <i class="bi bi-shop me-1"></i> Ver catálogo de motos disponibles
-        </a>
+        <div class="mt-4">
+            <a asp-controller="Catalog" asp-action="Index" class="btn btn-primary btn-lg">
+                <i class="bi bi-shop me-1"></i> Ver catálogo de motos disponibles
+            </a>
+        </div>
+
+    </div>
+}
+else
+{
+    @* Con sesión: tablero con los números del negocio *@
+    <div class="pagetitle">
+        <h1>Tablero</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item active">Inicio</li>
+            </ol>
+        </nav>
     </div>
 
-</div>
+    <section class="section dashboard">
+
+        <div class="row">
+
+            @if (Model.AvailablePublications.HasValue)
+            {
+                <div class="col-xxl-3 col-md-6">
+                    <div class="card info-card sales-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Publicaciones <span>| Disponibles</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-megaphone"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@Model.AvailablePublications</h6>
+                                    <a asp-controller="Publications" asp-action="Index" class="small stretched-link">Ver publicaciones</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.RegisteredMotorcycles.HasValue)
+            {
+                <div class="col-xxl-3 col-md-6">
+                    <div class="card info-card revenue-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Motos <span>| Registradas</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-speedometer2"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@Model.RegisteredMotorcycles</h6>
+                                    <a asp-controller="Motorcycles" asp-action="Index" class="small stretched-link">Ver motos</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.PendingInterests.HasValue)
+            {
+                <div class="col-xxl-3 col-md-6">
+                    <div class="card info-card customers-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Interesados <span>| Pendientes</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@Model.PendingInterests</h6>
+                                    <a asp-controller="Interests" asp-action="Index" class="small stretched-link">Ver interesados</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.ActiveReservations.HasValue)
+            {
+                <div class="col-xxl-3 col-md-6">
+                    <div class="card info-card sales-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Reservas <span>| Vigentes</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-calendar-check"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6>@Model.ActiveReservations</h6>
+                                    <a asp-controller="Reservations" asp-action="Index" class="small stretched-link">Ver reservas</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @if (!Model.HasAnyCounter)
+        {
+            <div class="alert alert-info">
+                Tu rol todavía no tiene módulos habilitados. Pídele a un administrador que te asigne permisos.
+            </div>
+        }
+
+        <a asp-controller="Catalog" asp-action="Index" class="btn btn-outline-primary">
+            <i class="bi bi-shop me-1"></i> Ver catálogo de motos disponibles
+        </a>
+
+    </section>
+}

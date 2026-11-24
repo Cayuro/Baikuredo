@@ -57,6 +57,7 @@ namespace Baikuredo.Web
             builder.Services.AddScoped<IReservationsService, ReservationsService>();
             builder.Services.AddScoped<IInterestsService, InterestsService>();
             builder.Services.AddScoped<IAuditService, AuditService>();
+            builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IRolesService, RolesService>();
